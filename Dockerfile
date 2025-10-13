@@ -1,4 +1,4 @@
-FROM node:22-alpine
+FROM node:20-alpine
 
 WORKDIR /usr/app
 
@@ -12,9 +12,7 @@ ARG MONGO_URI
 ARG JWT_SECRET
 
 ENV MONGO_URI=${MONGO_URI}
-
-RUN echo "MONGO_URI=${MONGO_URI}" > .env
-RUN echo "JWT_SECRET=${JWT_SECRET}" > .env
+ENV JWT_SECRET=${JWT_SECRET}
 
 RUN npm run build
 
