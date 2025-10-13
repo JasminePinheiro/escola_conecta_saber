@@ -18,7 +18,11 @@ import { LoggerMiddleware } from './common/middlewares/logger.middleware.js';
         const uri = configService.get<string>('MONGO_URI');
 
         return {
-          uri
+          uri,
+          retryAttempts: 3,
+          retryDelay: 1000,
+          serverSelectionTimeoutMS: 30000,
+          socketTimeoutMS: 45000,
         };
       },
       inject: [ConfigService],
