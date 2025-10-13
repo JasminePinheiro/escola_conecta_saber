@@ -26,7 +26,10 @@ describe('Posts (e2e)', () => {
 
     await app.init();
 
-    // Create test users
+    await userModel.deleteMany({ 
+      email: { $in: ['student@example.com', 'teacher@example.com', 'admin@example.com'] } 
+    });
+
     const studentRes = await request(app.getHttpServer())
       .post('/auth/register')
       .send({
