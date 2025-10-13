@@ -16,13 +16,30 @@ import { LoggerMiddleware } from './common/middlewares/logger.middleware.js';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
         const uri = configService.get<string>('MONGO_URI');
+        
+        if (!uri) {
+          console.error('❌ MONGO_URI não encontrada nas variáveis de ambiente!');
+          throw new Error('MONGO_URI is not defined');
+        }
+        
+        console.log('🔌 Tentando conectar ao MongoDB...');
+        console.log('📍 URI encontrada:', uri.substring(0, 20) + '...');
 
         return {
           uri,
-          retryAttempts: 3,
-          retryDelay: 1000,
+          retryAttempts: 5,
+          retryDelay: 3000,
           serverSelectionTimeoutMS: 30000,
           socketTimeoutMS: 45000,
+          connectTimeoutMS: 30000,
+          family: 4, // Força IPv4
+          // Configuração simplificada de SSL para MongoDB Atlas
+          ssl: true,
+          tls: true,
+          tlsInsecure: false,
+          // Connection pool
+          maxPoolSize: 10,
+          minPoolSize: 2,
         };
       },
       inject: [ConfigService],
