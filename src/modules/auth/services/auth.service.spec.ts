@@ -1,6 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { JwtService } from '@nestjs/jwt';
-import { UnauthorizedException, ConflictException, NotFoundException } from '@nestjs/common';
+import {
+  UnauthorizedException,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 import { AuthService } from './auth.service';
 import { UserRepository } from '../repositories/user.repository';
@@ -77,14 +81,18 @@ describe('AuthService', () => {
       mockUserRepository.findByEmail.mockResolvedValue(null);
       (bcrypt.hash as jest.Mock).mockResolvedValue('hashedPassword');
       mockUserRepository.create.mockResolvedValue(mockUser);
-      mockJwtService.sign.mockReturnValueOnce('accessToken').mockReturnValueOnce('refreshToken');
+      mockJwtService.sign
+        .mockReturnValueOnce('accessToken')
+        .mockReturnValueOnce('refreshToken');
 
       const result = await service.register(registerDto);
 
       expect(result).toHaveProperty('user');
       expect(result).toHaveProperty('accessToken');
       expect(result).toHaveProperty('refreshToken');
-      expect(mockUserRepository.findByEmail).toHaveBeenCalledWith(registerDto.email);
+      expect(mockUserRepository.findByEmail).toHaveBeenCalledWith(
+        registerDto.email,
+      );
       expect(mockUserRepository.create).toHaveBeenCalled();
     });
 
@@ -98,7 +106,9 @@ describe('AuthService', () => {
 
       mockUserRepository.findByEmail.mockResolvedValue(mockUser);
 
-      await expect(service.register(registerDto)).rejects.toThrow(ConflictException);
+      await expect(service.register(registerDto)).rejects.toThrow(
+        ConflictException,
+      );
     });
   });
 
@@ -112,14 +122,18 @@ describe('AuthService', () => {
       mockUserRepository.findByEmail.mockResolvedValue(mockUser);
       (bcrypt.compare as jest.Mock).mockResolvedValue(true);
       mockUserRepository.updateLastLogin.mockResolvedValue(undefined);
-      mockJwtService.sign.mockReturnValueOnce('accessToken').mockReturnValueOnce('refreshToken');
+      mockJwtService.sign
+        .mockReturnValueOnce('accessToken')
+        .mockReturnValueOnce('refreshToken');
 
       const result = await service.login(loginDto);
 
       expect(result).toHaveProperty('user');
       expect(result).toHaveProperty('accessToken');
       expect(result).toHaveProperty('refreshToken');
-      expect(mockUserRepository.findByEmail).toHaveBeenCalledWith(loginDto.email);
+      expect(mockUserRepository.findByEmail).toHaveBeenCalledWith(
+        loginDto.email,
+      );
     });
 
     it('should throw UnauthorizedException for invalid credentials', async () => {
@@ -131,7 +145,9 @@ describe('AuthService', () => {
       mockUserRepository.findByEmail.mockResolvedValue(mockUser);
       (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 
-      await expect(service.login(loginDto)).rejects.toThrow(UnauthorizedException);
+      await expect(service.login(loginDto)).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
 
     it('should throw UnauthorizedException if user not found', async () => {
@@ -142,7 +158,9 @@ describe('AuthService', () => {
 
       mockUserRepository.findByEmail.mockResolvedValue(null);
 
-      await expect(service.login(loginDto)).rejects.toThrow(UnauthorizedException);
+      await expect(service.login(loginDto)).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 
@@ -154,13 +172,17 @@ describe('AuthService', () => {
 
       expect(result).toHaveProperty('id');
       expect(result.email).toBe(mockUser.email);
-      expect(mockUserRepository.findById).toHaveBeenCalledWith('507f1f77bcf86cd799439011');
+      expect(mockUserRepository.findById).toHaveBeenCalledWith(
+        '507f1f77bcf86cd799439011',
+      );
     });
 
     it('should throw NotFoundException if user not found', async () => {
       mockUserRepository.findById.mockResolvedValue(null);
 
-      await expect(service.findUserById('507f1f77bcf86cd799439011')).rejects.toThrow(NotFoundException);
+      await expect(
+        service.findUserById('507f1f77bcf86cd799439011'),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -172,10 +194,16 @@ describe('AuthService', () => {
       mockUserRepository.findById.mockResolvedValue(mockUser);
       mockUserRepository.update.mockResolvedValue(updatedUser);
 
-      const result = await service.updateProfile('507f1f77bcf86cd799439011', updateDto);
+      const result = await service.updateProfile(
+        '507f1f77bcf86cd799439011',
+        updateDto,
+      );
 
       expect(result.name).toBe('Updated Name');
-      expect(mockUserRepository.update).toHaveBeenCalledWith('507f1f77bcf86cd799439011', updateDto);
+      expect(mockUserRepository.update).toHaveBeenCalledWith(
+        '507f1f77bcf86cd799439011',
+        updateDto,
+      );
     });
   });
 
@@ -191,7 +219,10 @@ describe('AuthService', () => {
       (bcrypt.hash as jest.Mock).mockResolvedValue('newHashedPassword');
       mockUserRepository.updatePassword.mockResolvedValue(undefined);
 
-      await service.changePassword('507f1f77bcf86cd799439011', changePasswordDto);
+      await service.changePassword(
+        '507f1f77bcf86cd799439011',
+        changePasswordDto,
+      );
 
       expect(mockUserRepository.updatePassword).toHaveBeenCalled();
     });
@@ -205,7 +236,9 @@ describe('AuthService', () => {
       mockUserRepository.findById.mockResolvedValue(mockUser);
       (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 
-      await expect(service.changePassword('507f1f77bcf86cd799439011', changePasswordDto)).rejects.toThrow(UnauthorizedException);
+      await expect(
+        service.changePassword('507f1f77bcf86cd799439011', changePasswordDto),
+      ).rejects.toThrow(UnauthorizedException);
     });
   });
 
@@ -221,4 +254,3 @@ describe('AuthService', () => {
     });
   });
 });
-

@@ -10,20 +10,27 @@ dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
-  app.useGlobalPipes(new ValidationPipe({
-    whitelist: true,
-    forbidNonWhitelisted: true,
-    transform: true,
-  }));
 
-  app.useGlobalInterceptors(new LoggingInterceptor(), new TransformInterceptor());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
+
+  app.useGlobalInterceptors(
+    new LoggingInterceptor(),
+    new TransformInterceptor(),
+  );
 
   app.enableCors();
 
   const config = new DocumentBuilder()
     .setTitle('Escola Conecta Saber API')
-    .setDescription('API de Blogging Educacional com autenticação JWT e controle de permissões')
+    .setDescription(
+      'API de Blogging Educacional com autenticação JWT e controle de permissões',
+    )
     .setVersion('1.0')
     .addTag('auth', 'Autenticação e gerenciamento de usuários')
     .addTag('posts', 'Gestão de posts educacionais')
@@ -42,10 +49,10 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-  
+
   const port = Number(process.env.PORT) || 3000;
   await app.listen(port, '0.0.0.0');
-  
+
   console.log(`API running on: http://localhost:${port}`);
   console.log(`Swagger documentation: http://localhost:${port}/api`);
 }

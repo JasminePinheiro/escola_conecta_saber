@@ -14,10 +14,10 @@ export class User {
   @Prop({ required: true })
   password: string;
 
-  @Prop({ 
-    type: String, 
-    enum: ['student', 'teacher', 'admin'], 
-    default: 'student' 
+  @Prop({
+    type: String,
+    enum: ['student', 'teacher', 'admin'],
+    default: 'student',
   })
   role: 'student' | 'teacher' | 'admin';
 
@@ -38,4 +38,3 @@ export const UserSchema = SchemaFactory.createForClass(User);
 
 UserSchema.index({ role: 1 });
 UserSchema.index({ isActive: 1 });
-

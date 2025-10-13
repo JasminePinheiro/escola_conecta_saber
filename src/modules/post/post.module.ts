@@ -14,4 +14,3 @@ import { Post, PostSchema } from './models/post.model.js';
   exports: [PostService],
 })
 export class PostModule {}
-

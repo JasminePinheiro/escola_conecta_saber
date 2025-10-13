@@ -9,16 +9,19 @@ export class LoggerMiddleware implements NestMiddleware {
     const { method, originalUrl, ip } = req;
     const userAgent = req.get('user-agent') || '';
 
-    this.logger.log(`Incoming: ${method} ${originalUrl} - ${ip} - ${userAgent}`);
+    this.logger.log(
+      `Incoming: ${method} ${originalUrl} - ${ip} - ${userAgent}`,
+    );
 
     const startTime = Date.now();
 
     res.on('finish', () => {
       const { statusCode } = res;
       const duration = Date.now() - startTime;
-      
-      const logLevel = statusCode >= 500 ? 'error' : statusCode >= 400 ? 'warn' : 'log';
-      
+
+      const logLevel =
+        statusCode >= 500 ? 'error' : statusCode >= 400 ? 'warn' : 'log';
+
       this.logger[logLevel](
         `Completed: ${method} ${originalUrl} ${statusCode} - ${duration}ms`,
       );
@@ -27,4 +30,3 @@ export class LoggerMiddleware implements NestMiddleware {
     next();
   }
 }
-

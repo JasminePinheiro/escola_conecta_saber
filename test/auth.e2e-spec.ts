@@ -16,9 +16,9 @@ describe('Auth (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes(new ValidationPipe());
-    
+
     userModel = moduleFixture.get(getModelToken('User'));
-    
+
     await app.init();
   });
 
@@ -110,14 +110,12 @@ describe('Auth (e2e)', () => {
 
   describe('/auth/login (POST)', () => {
     beforeEach(async () => {
-      await request(app.getHttpServer())
-        .post('/auth/register')
-        .send({
-          email: 'testlogin@example.com',
-          name: 'Test Login User',
-          password: 'password123',
-          role: 'student',
-        });
+      await request(app.getHttpServer()).post('/auth/register').send({
+        email: 'testlogin@example.com',
+        name: 'Test Login User',
+        password: 'password123',
+        role: 'student',
+      });
     });
 
     it('should login with valid credentials', () => {
@@ -185,9 +183,7 @@ describe('Auth (e2e)', () => {
     });
 
     it('should fail without token', () => {
-      return request(app.getHttpServer())
-        .get('/auth/profile')
-        .expect(401);
+      return request(app.getHttpServer()).get('/auth/profile').expect(401);
     });
 
     it('should fail with invalid token', () => {
@@ -288,4 +284,3 @@ describe('Auth (e2e)', () => {
     });
   });
 });
-

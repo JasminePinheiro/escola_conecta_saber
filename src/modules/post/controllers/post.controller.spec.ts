@@ -1,7 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PostController } from './post.controller';
 import { PostService } from '../services/post.service';
-import { CreatePostDto, UpdatePostDto, PaginationDto, SearchPostsDto } from '../dto/post.dto';
+import {
+  CreatePostDto,
+  UpdatePostDto,
+  PaginationDto,
+  SearchPostsDto,
+} from '../dto/post.dto';
 
 describe('PostController', () => {
   let controller: PostController;
@@ -117,7 +122,9 @@ describe('PostController', () => {
       const result = await controller.findAllForTeachers(paginationDto);
 
       expect(result).toEqual(mockResponse);
-      expect(mockPostService.findAllForTeachers).toHaveBeenCalledWith(paginationDto);
+      expect(mockPostService.findAllForTeachers).toHaveBeenCalledWith(
+        paginationDto,
+      );
     });
   });
 
@@ -145,10 +152,14 @@ describe('PostController', () => {
     it('should return a post by id', async () => {
       mockPostService.findOne.mockResolvedValue(mockPost);
 
-      const result = await controller.findOne({ id: '507f1f77bcf86cd799439012' });
+      const result = await controller.findOne({
+        id: '507f1f77bcf86cd799439012',
+      });
 
       expect(result).toEqual(mockPost);
-      expect(mockPostService.findOne).toHaveBeenCalledWith('507f1f77bcf86cd799439012');
+      expect(mockPostService.findOne).toHaveBeenCalledWith(
+        '507f1f77bcf86cd799439012',
+      );
     });
   });
 
@@ -159,11 +170,18 @@ describe('PostController', () => {
 
       mockPostService.update.mockResolvedValue(updatedPost);
 
-      const result = await controller.update({ id: '507f1f77bcf86cd799439012' }, updateDto, mockUser);
+      const result = await controller.update(
+        { id: '507f1f77bcf86cd799439012' },
+        updateDto,
+        mockUser,
+      );
 
       expect(result).toEqual(updatedPost);
       expect(updateDto.author).toBe(mockUser.name);
-      expect(mockPostService.update).toHaveBeenCalledWith('507f1f77bcf86cd799439012', updateDto);
+      expect(mockPostService.update).toHaveBeenCalledWith(
+        '507f1f77bcf86cd799439012',
+        updateDto,
+      );
     });
   });
 
@@ -173,8 +191,9 @@ describe('PostController', () => {
 
       await controller.remove({ id: '507f1f77bcf86cd799439012' });
 
-      expect(mockPostService.remove).toHaveBeenCalledWith('507f1f77bcf86cd799439012');
+      expect(mockPostService.remove).toHaveBeenCalledWith(
+        '507f1f77bcf86cd799439012',
+      );
     });
   });
 });
-

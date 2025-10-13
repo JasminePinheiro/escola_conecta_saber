@@ -18,10 +18,10 @@ export class AppController {
   @Get('mongo-status')
   async checkHealth() {
     const mongoStatus = this.connection.readyState;
-    
+
     return {
       status: mongoStatus === 1 ? 'healthy' : 'unhealthy',
-      mongodb: mongoStatus === 1 ? 'connected' : 'disconnected'
+      mongodb: mongoStatus === 1 ? 'connected' : 'disconnected',
     };
   }
 }

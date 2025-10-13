@@ -106,13 +106,17 @@ describe('PostService', () => {
       const result = await service.findOne('507f1f77bcf86cd799439012');
 
       expect(result.id).toBe(mockPost._id);
-      expect(mockPostRepository.findById).toHaveBeenCalledWith('507f1f77bcf86cd799439012');
+      expect(mockPostRepository.findById).toHaveBeenCalledWith(
+        '507f1f77bcf86cd799439012',
+      );
     });
 
     it('should throw NotFoundException if post not found', async () => {
       mockPostRepository.findById.mockResolvedValue(null);
 
-      await expect(service.findOne('nonexistent')).rejects.toThrow(NotFoundException);
+      await expect(service.findOne('nonexistent')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -123,16 +127,24 @@ describe('PostService', () => {
 
       mockPostRepository.update.mockResolvedValue(updatedPost);
 
-      const result = await service.update('507f1f77bcf86cd799439012', updateDto);
+      const result = await service.update(
+        '507f1f77bcf86cd799439012',
+        updateDto,
+      );
 
       expect(result.title).toBe('Updated Title');
-      expect(mockPostRepository.update).toHaveBeenCalledWith('507f1f77bcf86cd799439012', updateDto);
+      expect(mockPostRepository.update).toHaveBeenCalledWith(
+        '507f1f77bcf86cd799439012',
+        updateDto,
+      );
     });
 
     it('should throw NotFoundException if post not found', async () => {
       mockPostRepository.update.mockResolvedValue(null);
 
-      await expect(service.update('nonexistent', { title: 'Test' })).rejects.toThrow(NotFoundException);
+      await expect(
+        service.update('nonexistent', { title: 'Test' }),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -142,13 +154,17 @@ describe('PostService', () => {
 
       await service.remove('507f1f77bcf86cd799439012');
 
-      expect(mockPostRepository.delete).toHaveBeenCalledWith('507f1f77bcf86cd799439012');
+      expect(mockPostRepository.delete).toHaveBeenCalledWith(
+        '507f1f77bcf86cd799439012',
+      );
     });
 
     it('should throw NotFoundException if post not found', async () => {
       mockPostRepository.delete.mockResolvedValue(null);
 
-      await expect(service.remove('nonexistent')).rejects.toThrow(NotFoundException);
+      await expect(service.remove('nonexistent')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -157,11 +173,14 @@ describe('PostService', () => {
       mockPostRepository.search.mockResolvedValue([mockPost]);
       mockPostRepository.countSearchResults.mockResolvedValue(1);
 
-      const result = await service.search({ query: 'test', page: 1, limit: 10 });
+      const result = await service.search({
+        query: 'test',
+        page: 1,
+        limit: 10,
+      });
 
       expect(result.data).toHaveLength(1);
       expect(mockPostRepository.search).toHaveBeenCalledWith('test', 0, 10);
     });
   });
 });
-

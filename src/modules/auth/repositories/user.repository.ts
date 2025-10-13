@@ -7,11 +7,11 @@ import { RegisterUserDto, UpdateProfileDto } from '../dto/auth.dto.js';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
-  constructor(
-    @InjectModel(User.name) private userModel: Model<UserDocument>,
-  ) {}
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-  async create(userData: RegisterUserDto & { password: string }): Promise<UserDocument> {
+  async create(
+    userData: RegisterUserDto & { password: string },
+  ): Promise<UserDocument> {
     const user = new this.userModel({
       ...userData,
       isActive: true,
@@ -34,18 +34,24 @@ export class UserRepository implements IUserRepository {
       .exec();
   }
 
-  async update(id: string, userData: Partial<UpdateProfileDto>): Promise<UserDocument | null> {
+  async update(
+    id: string,
+    userData: Partial<UpdateProfileDto>,
+  ): Promise<UserDocument | null> {
     return this.userModel
       .findByIdAndUpdate(id, userData, { new: true, runValidators: true })
       .exec();
   }
 
   async updatePassword(id: string, hashedPassword: string): Promise<void> {
-    await this.userModel.findByIdAndUpdate(id, { password: hashedPassword }).exec();
+    await this.userModel
+      .findByIdAndUpdate(id, { password: hashedPassword })
+      .exec();
   }
 
   async updateLastLogin(id: string): Promise<void> {
-    await this.userModel.findByIdAndUpdate(id, { lastLogin: new Date() }).exec();
+    await this.userModel
+      .findByIdAndUpdate(id, { lastLogin: new Date() })
+      .exec();
   }
 }
-

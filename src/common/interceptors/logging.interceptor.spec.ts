@@ -48,13 +48,13 @@ describe('LoggingInterceptor', () => {
   it('should log error when request fails', (done) => {
     const errorSpy = jest.spyOn(interceptor['logger'], 'error');
     const testError = new Error('Test error');
-    mockCallHandler.handle = jest.fn().mockReturnValue(throwError(() => testError));
+    mockCallHandler.handle = jest
+      .fn()
+      .mockReturnValue(throwError(() => testError));
 
     interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe({
       error: () => {
-        expect(errorSpy).toHaveBeenCalledWith(
-          expect.stringContaining('Erro:'),
-        );
+        expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining('Erro:'));
         done();
       },
     });
@@ -66,12 +66,9 @@ describe('LoggingInterceptor', () => {
 
     interceptor.intercept(mockExecutionContext, mockCallHandler).subscribe({
       next: () => {
-        expect(debugSpy).toHaveBeenCalledWith(
-          expect.stringMatching(/\d+ms/),
-        );
+        expect(debugSpy).toHaveBeenCalledWith(expect.stringMatching(/\d+ms/));
         done();
       },
     });
   });
 });
-

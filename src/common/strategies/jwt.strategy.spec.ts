@@ -55,29 +55,46 @@ describe('JwtStrategy', () => {
 
   describe('validate', () => {
     it('should validate and return user', async () => {
-      const payload = { sub: '507f1f77bcf86cd799439011', email: 'test@escola.com', role: 'student' };
+      const payload = {
+        sub: '507f1f77bcf86cd799439011',
+        email: 'test@escola.com',
+        role: 'student',
+      };
       mockAuthService.findUserById.mockResolvedValue(mockUser);
 
       const result = await strategy.validate(payload);
 
       expect(result).toEqual(mockUser);
-      expect(mockAuthService.findUserById).toHaveBeenCalledWith('507f1f77bcf86cd799439011');
+      expect(mockAuthService.findUserById).toHaveBeenCalledWith(
+        '507f1f77bcf86cd799439011',
+      );
     });
 
     it('should throw UnauthorizedException if user not found', async () => {
-      const payload = { sub: 'nonexistent', email: 'test@escola.com', role: 'student' };
+      const payload = {
+        sub: 'nonexistent',
+        email: 'test@escola.com',
+        role: 'student',
+      };
       mockAuthService.findUserById.mockResolvedValue(null);
 
-      await expect(strategy.validate(payload)).rejects.toThrow(UnauthorizedException);
+      await expect(strategy.validate(payload)).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
 
     it('should throw UnauthorizedException if user is inactive', async () => {
-      const payload = { sub: '507f1f77bcf86cd799439011', email: 'test@escola.com', role: 'student' };
+      const payload = {
+        sub: '507f1f77bcf86cd799439011',
+        email: 'test@escola.com',
+        role: 'student',
+      };
       const inactiveUser = { ...mockUser, isActive: false };
       mockAuthService.findUserById.mockResolvedValue(inactiveUser);
 
-      await expect(strategy.validate(payload)).rejects.toThrow(UnauthorizedException);
+      await expect(strategy.validate(payload)).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 });
-

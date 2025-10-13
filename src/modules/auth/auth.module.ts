@@ -28,4 +28,3 @@ import { RolesGuard } from '../../common/guards/roles.guard.js';
   exports: [AuthService, JwtStrategy, RolesGuard],
 })
 export class AuthModule {}
-

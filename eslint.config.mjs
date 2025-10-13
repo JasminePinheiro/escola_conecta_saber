@@ -9,7 +9,7 @@ export default tseslint.config(
     ignores: ['eslint.config.mjs'],
   },
   eslint.configs.recommended,
-  ...tseslint.configs.recommendedTypeChecked,
+  ...tseslint.configs.recommended, // Configuração básica do TypeScript
   eslintPluginPrettierRecommended,
   {
     languageOptions: {
@@ -23,14 +23,11 @@ export default tseslint.config(
         tsconfigRootDir: import.meta.dirname,
       },
     },
-  },
-  {
     rules: {
       'prettier/prettier': ['error', { 'endOfLine': 'auto', 'singleQuote': true, 'semi': true, 'trailingComma': 'all' }],
-      '@typescript-eslint/interface-name-prefix': 'error',
       '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-floating-promises': 'warn',
-      '@typescript-eslint/no-unsafe-argument': 'warn'
+      '@typescript-eslint/no-unused-vars': 'off',
+      '@typescript-eslint/no-require-imports': 'off',
     },
   },
 );

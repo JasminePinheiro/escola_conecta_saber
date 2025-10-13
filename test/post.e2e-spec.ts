@@ -20,10 +20,10 @@ describe('Posts (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes(new ValidationPipe());
-    
+
     userModel = moduleFixture.get(getModelToken('User'));
     postModel = moduleFixture.get(getModelToken('Post'));
-    
+
     await app.init();
 
     // Create test users
@@ -383,10 +383,7 @@ describe('Posts (e2e)', () => {
         .set('Authorization', `Bearer ${teacherToken}`)
         .expect(204);
 
-      // Verify post is deleted
-      return request(app.getHttpServer())
-        .get(`/posts/${postId}`)
-        .expect(404);
+      return request(app.getHttpServer()).get(`/posts/${postId}`).expect(404);
     });
 
     it('should fail to delete post as student', () => {
@@ -397,4 +394,3 @@ describe('Posts (e2e)', () => {
     });
   });
 });
-

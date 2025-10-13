@@ -15,4 +15,3 @@ describe('JwtAuthGuard', () => {
     expect(guard).toBeInstanceOf(JwtAuthGuard);
   });
 });
-

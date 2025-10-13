@@ -1,13 +1,22 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { PostRepository } from '../repositories/post.repository.js';
-import { CreatePostDto, UpdatePostDto, SearchPostsDto, PaginationDto, PostResponseDto, PaginatedResponseDto } from '../dto/post.dto.js';
+import {
+  CreatePostDto,
+  UpdatePostDto,
+  SearchPostsDto,
+  PaginationDto,
+  PostResponseDto,
+  PaginatedResponseDto,
+} from '../dto/post.dto.js';
 import { PostDocument } from '../models/post.model.js';
 
 @Injectable()
 export class PostService {
-  constructor(
-    private readonly postRepository: PostRepository,
-  ) {}
+  constructor(private readonly postRepository: PostRepository) {}
 
   async create(createPostDto: CreatePostDto): Promise<PostResponseDto> {
     try {
@@ -22,7 +31,9 @@ export class PostService {
     }
   }
 
-  async findAll(paginationDto: PaginationDto): Promise<PaginatedResponseDto<PostResponseDto>> {
+  async findAll(
+    paginationDto: PaginationDto,
+  ): Promise<PaginatedResponseDto<PostResponseDto>> {
     const { page = 1, limit = 10 } = paginationDto;
     const skip = (page - 1) * limit;
 
@@ -35,7 +46,7 @@ export class PostService {
       const totalPages = Math.ceil(total / limit);
 
       return {
-        data: posts.map(post => this.mapToResponseDto(post)),
+        data: posts.map((post) => this.mapToResponseDto(post)),
         total,
         page,
         limit,
@@ -46,7 +57,9 @@ export class PostService {
     }
   }
 
-  async findAllForTeachers(paginationDto: PaginationDto): Promise<PaginatedResponseDto<PostResponseDto>> {
+  async findAllForTeachers(
+    paginationDto: PaginationDto,
+  ): Promise<PaginatedResponseDto<PostResponseDto>> {
     const { page = 1, limit = 10 } = paginationDto;
     const skip = (page - 1) * limit;
 
@@ -59,7 +72,7 @@ export class PostService {
       const totalPages = Math.ceil(total / limit);
 
       return {
-        data: posts.map(post => this.mapToResponseDto(post)),
+        data: posts.map((post) => this.mapToResponseDto(post)),
         total,
         page,
         limit,
@@ -85,7 +98,10 @@ export class PostService {
     }
   }
 
-  async update(id: string, updatePostDto: UpdatePostDto): Promise<PostResponseDto> {
+  async update(
+    id: string,
+    updatePostDto: UpdatePostDto,
+  ): Promise<PostResponseDto> {
     try {
       const updatedPost = await this.postRepository.update(id, updatePostDto);
 
@@ -116,7 +132,9 @@ export class PostService {
     }
   }
 
-  async search(searchPostsDto: SearchPostsDto): Promise<PaginatedResponseDto<PostResponseDto>> {
+  async search(
+    searchPostsDto: SearchPostsDto,
+  ): Promise<PaginatedResponseDto<PostResponseDto>> {
     const { query, page = 1, limit = 10 } = searchPostsDto;
     const skip = (page - 1) * limit;
 
@@ -129,7 +147,7 @@ export class PostService {
       const totalPages = Math.ceil(total / limit);
 
       return {
-        data: posts.map(post => this.mapToResponseDto(post)),
+        data: posts.map((post) => this.mapToResponseDto(post)),
         total,
         page,
         limit,
@@ -155,4 +173,3 @@ export class PostService {
     };
   }
 }
-

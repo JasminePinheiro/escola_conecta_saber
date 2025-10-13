@@ -23,9 +23,7 @@ export class LoggingInterceptor implements NestInterceptor {
       tap({
         next: (data) => {
           const duration = Date.now() - now;
-          this.logger.debug(
-            `Concluído: ${method} ${url} - ${duration}ms`,
-          );
+          this.logger.debug(`Concluído: ${method} ${url} - ${duration}ms`);
         },
         error: (error) => {
           const duration = Date.now() - now;
@@ -37,4 +35,3 @@ export class LoggingInterceptor implements NestInterceptor {
     );
   }
 }
-

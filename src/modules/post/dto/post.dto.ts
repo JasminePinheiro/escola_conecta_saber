@@ -1,23 +1,48 @@
-import { IsString, IsOptional, IsBoolean, IsArray, IsNumber, MinLength, MaxLength, IsNotEmpty, Min, Max } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsBoolean,
+  IsArray,
+  IsNumber,
+  MinLength,
+  MaxLength,
+  IsNotEmpty,
+  Min,
+  Max,
+} from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreatePostDto {
-  @ApiProperty({ example: 'Introdução à Programação', description: 'Título do post', minLength: 1, maxLength: 200 })
+  @ApiProperty({
+    example: 'Introdução à Programação',
+    description: 'Título do post',
+    minLength: 1,
+    maxLength: 200,
+  })
   @IsString()
   @IsNotEmpty()
   @MinLength(1)
   @MaxLength(200)
   title: string;
 
-  @ApiProperty({ example: 'Neste post vamos aprender os conceitos básicos de programação...', description: 'Conteúdo do post', minLength: 1, maxLength: 5000 })
+  @ApiProperty({
+    example: 'Neste post vamos aprender os conceitos básicos de programação...',
+    description: 'Conteúdo do post',
+    minLength: 1,
+    maxLength: 5000,
+  })
   @IsString()
   @IsNotEmpty()
   @MinLength(1)
   @MaxLength(5000)
   content: string;
 
-  @ApiPropertyOptional({ example: 'Professor Silva', description: 'Nome do autor (preenchido automaticamente)', maxLength: 100 })
+  @ApiPropertyOptional({
+    example: 'Professor Silva',
+    description: 'Nome do autor (preenchido automaticamente)',
+    maxLength: 100,
+  })
   @IsOptional()
   @IsString()
   @IsNotEmpty()
@@ -25,31 +50,49 @@ export class CreatePostDto {
   @MaxLength(100)
   author?: string;
 
-  @ApiPropertyOptional({ example: ['educação', 'programação', 'iniciantes'], description: 'Tags do post' })
+  @ApiPropertyOptional({
+    example: ['educação', 'programação', 'iniciantes'],
+    description: 'Tags do post',
+  })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
   tags?: string[];
 
-  @ApiPropertyOptional({ example: true, description: 'Se o post está visível publicamente', default: false })
+  @ApiPropertyOptional({
+    example: true,
+    description: 'Se o post está visível publicamente',
+    default: false,
+  })
   @IsOptional()
   @IsBoolean()
   @Transform(({ value }) => value === 'true' || value === true)
   published?: boolean;
 
-  @ApiPropertyOptional({ example: 'published', enum: ['draft', 'published', 'scheduled', 'private'], description: 'Estado do post', default: 'draft' })
+  @ApiPropertyOptional({
+    example: 'published',
+    enum: ['draft', 'published', 'scheduled', 'private'],
+    description: 'Estado do post',
+    default: 'draft',
+  })
   @IsOptional()
   @IsString()
   status?: 'draft' | 'published' | 'scheduled' | 'private';
 
-  @ApiPropertyOptional({ example: '2024-12-25T10:00:00Z', description: 'Data de publicação agendada' })
+  @ApiPropertyOptional({
+    example: '2024-12-25T10:00:00Z',
+    description: 'Data de publicação agendada',
+  })
   @IsOptional()
-  @Transform(({ value }) => value ? new Date(value) : undefined)
+  @Transform(({ value }) => (value ? new Date(value) : undefined))
   scheduledAt?: Date;
 }
 
 export class UpdatePostDto {
-  @ApiPropertyOptional({ example: 'Título Atualizado', description: 'Novo título do post' })
+  @ApiPropertyOptional({
+    example: 'Título Atualizado',
+    description: 'Novo título do post',
+  })
   @IsOptional()
   @IsString()
   @IsNotEmpty()
@@ -57,7 +100,10 @@ export class UpdatePostDto {
   @MaxLength(200)
   title?: string;
 
-  @ApiPropertyOptional({ example: 'Conteúdo atualizado do post...', description: 'Novo conteúdo do post' })
+  @ApiPropertyOptional({
+    example: 'Conteúdo atualizado do post...',
+    description: 'Novo conteúdo do post',
+  })
   @IsOptional()
   @IsString()
   @IsNotEmpty()
@@ -65,7 +111,10 @@ export class UpdatePostDto {
   @MaxLength(5000)
   content?: string;
 
-  @ApiPropertyOptional({ example: 'Professor Silva', description: 'Nome do autor' })
+  @ApiPropertyOptional({
+    example: 'Professor Silva',
+    description: 'Nome do autor',
+  })
   @IsOptional()
   @IsString()
   @IsNotEmpty()
@@ -73,45 +122,74 @@ export class UpdatePostDto {
   @MaxLength(100)
   author?: string;
 
-  @ApiPropertyOptional({ example: ['educação', 'tecnologia'], description: 'Novas tags do post' })
+  @ApiPropertyOptional({
+    example: ['educação', 'tecnologia'],
+    description: 'Novas tags do post',
+  })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
   tags?: string[];
 
-  @ApiPropertyOptional({ example: true, description: 'Se o post está visível publicamente' })
+  @ApiPropertyOptional({
+    example: true,
+    description: 'Se o post está visível publicamente',
+  })
   @IsOptional()
   @IsBoolean()
   @Transform(({ value }) => value === 'true' || value === true)
   published?: boolean;
 
-  @ApiPropertyOptional({ example: 'published', enum: ['draft', 'published', 'scheduled', 'private'], description: 'Estado do post' })
+  @ApiPropertyOptional({
+    example: 'published',
+    enum: ['draft', 'published', 'scheduled', 'private'],
+    description: 'Estado do post',
+  })
   @IsOptional()
   @IsString()
   status?: 'draft' | 'published' | 'scheduled' | 'private';
 
-  @ApiPropertyOptional({ example: '2024-12-25T10:00:00Z', description: 'Data de publicação agendada' })
+  @ApiPropertyOptional({
+    example: '2024-12-25T10:00:00Z',
+    description: 'Data de publicação agendada',
+  })
   @IsOptional()
-  @Transform(({ value }) => value ? new Date(value) : undefined)
+  @Transform(({ value }) => (value ? new Date(value) : undefined))
   scheduledAt?: Date;
 }
 
 export class SearchPostsDto {
-  @ApiProperty({ example: 'programação', description: 'Termo de busca', minLength: 1, maxLength: 100 })
+  @ApiProperty({
+    example: 'programação',
+    description: 'Termo de busca',
+    minLength: 1,
+    maxLength: 100,
+  })
   @IsString()
   @IsNotEmpty()
   @MinLength(1)
   @MaxLength(100)
   query: string;
 
-  @ApiPropertyOptional({ example: 1, description: 'Número da página', minimum: 1, default: 1 })
+  @ApiPropertyOptional({
+    example: 1,
+    description: 'Número da página',
+    minimum: 1,
+    default: 1,
+  })
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
   @Min(1)
   page?: number = 1;
 
-  @ApiPropertyOptional({ example: 10, description: 'Itens por página', minimum: 1, maximum: 50, default: 10 })
+  @ApiPropertyOptional({
+    example: 10,
+    description: 'Itens por página',
+    minimum: 1,
+    maximum: 50,
+    default: 10,
+  })
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
@@ -121,14 +199,25 @@ export class SearchPostsDto {
 }
 
 export class PaginationDto {
-  @ApiPropertyOptional({ example: 1, description: 'Número da página', minimum: 1, default: 1 })
+  @ApiPropertyOptional({
+    example: 1,
+    description: 'Número da página',
+    minimum: 1,
+    default: 1,
+  })
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
   @Min(1)
   page?: number = 1;
 
-  @ApiPropertyOptional({ example: 10, description: 'Itens por página', minimum: 1, maximum: 50, default: 10 })
+  @ApiPropertyOptional({
+    example: 10,
+    description: 'Itens por página',
+    minimum: 1,
+    maximum: 50,
+    default: 10,
+  })
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
@@ -156,7 +245,10 @@ export class PostResponseDto {
   @ApiProperty({ example: true })
   published: boolean;
 
-  @ApiProperty({ example: 'published', enum: ['draft', 'published', 'scheduled', 'private'] })
+  @ApiProperty({
+    example: 'published',
+    enum: ['draft', 'published', 'scheduled', 'private'],
+  })
   status: 'draft' | 'published' | 'scheduled' | 'private';
 
   @ApiPropertyOptional({ example: '2024-12-25T10:00:00Z' })
@@ -185,4 +277,3 @@ export class PaginatedResponseDto<T> {
   @ApiProperty({ example: 5 })
   totalPages: number;
 }
-

@@ -1,9 +1,22 @@
-import { Injectable, UnauthorizedException, ConflictException, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  ConflictException,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { Types } from 'mongoose';
 import { UserRepository } from '../repositories/user.repository.js';
-import { RegisterUserDto, LoginUserDto, UpdateProfileDto, ChangePasswordDto, UserResponseDto, AuthResponseDto } from '../dto/auth.dto.js';
+import {
+  RegisterUserDto,
+  LoginUserDto,
+  UpdateProfileDto,
+  ChangePasswordDto,
+  UserResponseDto,
+  AuthResponseDto,
+} from '../dto/auth.dto.js';
 import { UserDocument } from '../models/user.model.js';
 
 @Injectable()
@@ -75,7 +88,10 @@ export class AuthService {
     }
   }
 
-  async validateUser(email: string, password: string): Promise<UserResponseDto | null> {
+  async validateUser(
+    email: string,
+    password: string,
+  ): Promise<UserResponseDto | null> {
     try {
       const user = await this.userRepository.findByEmail(email);
       if (!user || !user.isActive) {
@@ -100,21 +116,27 @@ export class AuthService {
       }
 
       const user = await this.userRepository.findById(id);
-      
+
       if (!user) {
         throw new NotFoundException('Usuário não encontrado');
       }
-    
+
       return this.mapToResponseDto(user);
     } catch (error) {
-      if (error instanceof NotFoundException || error instanceof BadRequestException) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof BadRequestException
+      ) {
         throw error;
       }
       throw new BadRequestException('Erro ao buscar usuário: ' + error.message);
     }
   }
 
-  async updateProfile(userId: string, updateProfileDto: UpdateProfileDto): Promise<UserResponseDto> {
+  async updateProfile(
+    userId: string,
+    updateProfileDto: UpdateProfileDto,
+  ): Promise<UserResponseDto> {
     try {
       const user = await this.userRepository.findById(userId);
       if (!user) {
@@ -122,27 +144,40 @@ export class AuthService {
       }
 
       if (updateProfileDto.email && updateProfileDto.email !== user.email) {
-        const existingUser = await this.userRepository.findByEmail(updateProfileDto.email);
+        const existingUser = await this.userRepository.findByEmail(
+          updateProfileDto.email,
+        );
         if (existingUser) {
           throw new ConflictException('Email já está em uso');
         }
       }
 
-      const updatedUser = await this.userRepository.update(userId, updateProfileDto);
+      const updatedUser = await this.userRepository.update(
+        userId,
+        updateProfileDto,
+      );
       if (!updatedUser) {
         throw new NotFoundException('Erro ao atualizar usuário');
       }
 
       return this.mapToResponseDto(updatedUser);
     } catch (error) {
-      if (error instanceof NotFoundException || error instanceof ConflictException) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof ConflictException
+      ) {
         throw error;
       }
-      throw new BadRequestException('Erro ao atualizar perfil: ' + error.message);
+      throw new BadRequestException(
+        'Erro ao atualizar perfil: ' + error.message,
+      );
     }
   }
 
-  async changePassword(userId: string, changePasswordDto: ChangePasswordDto): Promise<void> {
+  async changePassword(
+    userId: string,
+    changePasswordDto: ChangePasswordDto,
+  ): Promise<void> {
     const { currentPassword, newPassword } = changePasswordDto;
 
     try {
@@ -151,7 +186,10 @@ export class AuthService {
         throw new NotFoundException('Usuário não encontrado');
       }
 
-      const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
+      const isCurrentPasswordValid = await bcrypt.compare(
+        currentPassword,
+        user.password,
+      );
       if (!isCurrentPasswordValid) {
         throw new UnauthorizedException('Senha atual incorreta');
       }
@@ -161,14 +199,19 @@ export class AuthService {
 
       await this.userRepository.updatePassword(userId, hashedNewPassword);
     } catch (error) {
-      if (error instanceof NotFoundException || error instanceof UnauthorizedException) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof UnauthorizedException
+      ) {
         throw error;
       }
       throw new BadRequestException('Erro ao alterar senha: ' + error.message);
     }
   }
 
-  private async generateTokens(user: UserDocument): Promise<{ accessToken: string; refreshToken: string }> {
+  private async generateTokens(
+    user: UserDocument,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
     const payload = {
       sub: (user._id as any).toString(),
       email: user.email,
@@ -184,9 +227,11 @@ export class AuthService {
   async findUsersByRole(role: string): Promise<UserResponseDto[]> {
     try {
       const users = await this.userRepository.findByRole(role);
-      return users.map(user => this.mapToResponseDto(user));
+      return users.map((user) => this.mapToResponseDto(user));
     } catch (error) {
-      throw new BadRequestException(`Erro ao buscar usuários com role ${role}: ` + error.message);
+      throw new BadRequestException(
+        `Erro ao buscar usuários com role ${role}: ` + error.message,
+      );
     }
   }
 
@@ -203,4 +248,3 @@ export class AuthService {
     };
   }
 }
-

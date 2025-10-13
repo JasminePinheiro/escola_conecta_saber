@@ -9,7 +9,7 @@ describe('LoggerMiddleware', () => {
 
   beforeEach(() => {
     middleware = new LoggerMiddleware();
-    
+
     mockRequest = {
       method: 'GET',
       originalUrl: '/test',
@@ -64,7 +64,9 @@ describe('LoggerMiddleware', () => {
       nextFunction,
     );
 
-    expect(mockResponse.on).toHaveBeenCalledWith('finish', expect.any(Function));
+    expect(mockResponse.on).toHaveBeenCalledWith(
+      'finish',
+      expect.any(Function),
+    );
   });
 });
-

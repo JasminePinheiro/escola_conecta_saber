@@ -1,34 +1,64 @@
-import { IsString, IsEmail, IsOptional, IsEnum, MinLength, MaxLength, IsNotEmpty } from 'class-validator';
+import {
+  IsString,
+  IsEmail,
+  IsOptional,
+  IsEnum,
+  MinLength,
+  MaxLength,
+  IsNotEmpty,
+} from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class RegisterUserDto {
-  @ApiProperty({ example: 'usuario@escola.com', description: 'Email do usuário', maxLength: 100 })
+  @ApiProperty({
+    example: 'usuario@escola.com',
+    description: 'Email do usuário',
+    maxLength: 100,
+  })
   @IsEmail()
   @MaxLength(100)
   email: string;
 
-  @ApiProperty({ example: 'João Silva', description: 'Nome completo do usuário', minLength: 2, maxLength: 100 })
+  @ApiProperty({
+    example: 'João Silva',
+    description: 'Nome completo do usuário',
+    minLength: 2,
+    maxLength: 100,
+  })
   @IsString()
   @IsNotEmpty()
   @MinLength(2)
   @MaxLength(100)
   name: string;
 
-  @ApiProperty({ example: 'senha123', description: 'Senha (mínimo 6 caracteres)', minLength: 6, maxLength: 50 })
+  @ApiProperty({
+    example: 'senha123',
+    description: 'Senha (mínimo 6 caracteres)',
+    minLength: 6,
+    maxLength: 50,
+  })
   @IsString()
   @IsNotEmpty()
   @MinLength(6)
   @MaxLength(50)
   password: string;
 
-  @ApiPropertyOptional({ example: 'student', enum: ['student', 'teacher'], description: 'Papel do usuário (admin não pode ser criado aqui)', default: 'student' })
+  @ApiPropertyOptional({
+    example: 'student',
+    enum: ['student', 'teacher'],
+    description: 'Papel do usuário (admin não pode ser criado aqui)',
+    default: 'student',
+  })
   @IsOptional()
   @IsEnum(['student', 'teacher'])
   role?: 'student' | 'teacher';
 }
 
 export class LoginUserDto {
-  @ApiProperty({ example: 'usuario@escola.com', description: 'Email do usuário' })
+  @ApiProperty({
+    example: 'usuario@escola.com',
+    description: 'Email do usuário',
+  })
   @IsEmail()
   email: string;
 
@@ -39,7 +69,12 @@ export class LoginUserDto {
 }
 
 export class UpdateProfileDto {
-  @ApiPropertyOptional({ example: 'João Silva', description: 'Novo nome do usuário', minLength: 2, maxLength: 100 })
+  @ApiPropertyOptional({
+    example: 'João Silva',
+    description: 'Novo nome do usuário',
+    minLength: 2,
+    maxLength: 100,
+  })
   @IsOptional()
   @IsString()
   @IsNotEmpty()
@@ -47,7 +82,11 @@ export class UpdateProfileDto {
   @MaxLength(100)
   name?: string;
 
-  @ApiPropertyOptional({ example: 'novoemail@escola.com', description: 'Novo email do usuário', maxLength: 100 })
+  @ApiPropertyOptional({
+    example: 'novoemail@escola.com',
+    description: 'Novo email do usuário',
+    maxLength: 100,
+  })
   @IsOptional()
   @IsEmail()
   @MaxLength(100)
@@ -55,12 +94,20 @@ export class UpdateProfileDto {
 }
 
 export class ChangePasswordDto {
-  @ApiProperty({ example: 'senhaAtual123', description: 'Senha atual do usuário' })
+  @ApiProperty({
+    example: 'senhaAtual123',
+    description: 'Senha atual do usuário',
+  })
   @IsString()
   @IsNotEmpty()
   currentPassword: string;
 
-  @ApiProperty({ example: 'novaSenha456', description: 'Nova senha (mínimo 6 caracteres)', minLength: 6, maxLength: 50 })
+  @ApiProperty({
+    example: 'novaSenha456',
+    description: 'Nova senha (mínimo 6 caracteres)',
+    minLength: 6,
+    maxLength: 50,
+  })
   @IsString()
   @IsNotEmpty()
   @MinLength(6)
@@ -104,4 +151,3 @@ export class AuthResponseDto {
   @ApiProperty({ example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' })
   refreshToken: string;
 }
-

@@ -1,7 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
 import { AuthService } from '../services/auth.service';
-import { RegisterUserDto, LoginUserDto, UpdateProfileDto, ChangePasswordDto } from '../dto/auth.dto';
+import {
+  RegisterUserDto,
+  LoginUserDto,
+  UpdateProfileDto,
+  ChangePasswordDto,
+} from '../dto/auth.dto';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -114,7 +119,10 @@ describe('AuthController', () => {
       const result = await controller.updateProfile(mockUser, updateDto);
 
       expect(result).toEqual(updatedUser);
-      expect(mockAuthService.updateProfile).toHaveBeenCalledWith(mockUser.id, updateDto);
+      expect(mockAuthService.updateProfile).toHaveBeenCalledWith(
+        mockUser.id,
+        updateDto,
+      );
     });
   });
 
@@ -129,7 +137,10 @@ describe('AuthController', () => {
 
       await controller.changePassword(mockUser, changePasswordDto);
 
-      expect(mockAuthService.changePassword).toHaveBeenCalledWith(mockUser.id, changePasswordDto);
+      expect(mockAuthService.changePassword).toHaveBeenCalledWith(
+        mockUser.id,
+        changePasswordDto,
+      );
     });
   });
 
@@ -157,4 +168,3 @@ describe('AuthController', () => {
     });
   });
 });
-

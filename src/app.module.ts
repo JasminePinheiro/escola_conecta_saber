@@ -16,7 +16,7 @@ import { LoggerMiddleware } from './common/middlewares/logger.middleware.js';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
         const uri = configService.get<string>('MONGO_URI');
-        
+
         if (!uri) {
           throw new Error('MONGO_URI is not defined in environment variables');
         }
@@ -47,8 +47,6 @@ import { LoggerMiddleware } from './common/middlewares/logger.middleware.js';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     // Aplica o middleware em todas as rotas
-    consumer
-      .apply(LoggerMiddleware)
-      .forRoutes('*');
+    consumer.apply(LoggerMiddleware).forRoutes('*');
   }
 }

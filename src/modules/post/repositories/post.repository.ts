@@ -7,9 +7,7 @@ import { CreatePostDto, UpdatePostDto } from '../dto/post.dto.js';
 
 @Injectable()
 export class PostRepository implements IPostRepository {
-  constructor(
-    @InjectModel(Post.name) private postModel: Model<PostDocument>,
-  ) {}
+  constructor(@InjectModel(Post.name) private postModel: Model<PostDocument>) {}
 
   async create(postData: CreatePostDto): Promise<PostDocument> {
     const post = new this.postModel(postData);
@@ -20,7 +18,11 @@ export class PostRepository implements IPostRepository {
     return this.postModel.findById(id).exec();
   }
 
-  async findAll(skip: number, limit: number, publishedOnly: boolean = false): Promise<PostDocument[]> {
+  async findAll(
+    skip: number,
+    limit: number,
+    publishedOnly: boolean = false,
+  ): Promise<PostDocument[]> {
     const query = publishedOnly ? { published: true } : {};
     return this.postModel
       .find(query)
@@ -35,7 +37,10 @@ export class PostRepository implements IPostRepository {
     return this.postModel.countDocuments(query);
   }
 
-  async update(id: string, postData: UpdatePostDto): Promise<PostDocument | null> {
+  async update(
+    id: string,
+    postData: UpdatePostDto,
+  ): Promise<PostDocument | null> {
     return this.postModel
       .findByIdAndUpdate(id, postData, { new: true, runValidators: true })
       .exec();
@@ -45,7 +50,11 @@ export class PostRepository implements IPostRepository {
     return this.postModel.findByIdAndDelete(id).exec();
   }
 
-  async search(query: string, skip: number, limit: number): Promise<PostDocument[]> {
+  async search(
+    query: string,
+    skip: number,
+    limit: number,
+  ): Promise<PostDocument[]> {
     const searchQuery = {
       $and: [
         { published: true },
@@ -84,4 +93,3 @@ export class PostRepository implements IPostRepository {
     return this.postModel.countDocuments(searchQuery);
   }
 }
-

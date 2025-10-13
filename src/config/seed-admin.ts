@@ -4,7 +4,8 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/escola_conecta_saber';
+const MONGO_URI =
+  process.env.MONGO_URI || 'mongodb://localhost:27017/escola_conecta_saber';
 
 async function seedAdmin() {
   try {
@@ -14,13 +15,17 @@ async function seedAdmin() {
       throw new Error('Conexão com o banco de dados não foi estabelecida');
     }
 
-    const existingAdmin = await connection.db.collection('users').findOne({ role: 'admin' });
-    
+    const existingAdmin = await connection.db
+      .collection('users')
+      .findOne({ role: 'admin' });
+
     if (existingAdmin) {
       console.log('Já existe um usuário admin cadastrado:');
       console.log(`Email: ${existingAdmin.email}`);
       console.log(`Nome: ${existingAdmin.name}`);
-      console.log('\nSe você deseja criar outro admin ou alterar este, faça manualmente no banco.');
+      console.log(
+        '\nSe você deseja criar outro admin ou alterar este, faça manualmente no banco.',
+      );
       await connection.close();
       return;
     }
@@ -41,7 +46,6 @@ async function seedAdmin() {
     console.log('Email: admin@escola.com');
     console.log('Senha: admin123');
     console.log('\nIMPORTANTE: Altere a senha após o primeiro login!');
-
   } catch (error) {
     console.error('Erro ao criar admin:', error);
   } finally {
@@ -51,4 +55,3 @@ async function seedAdmin() {
 }
 
 seedAdmin();
-

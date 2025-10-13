@@ -20,10 +20,10 @@ export class Post {
   @Prop({ default: true })
   published: boolean;
 
-  @Prop({ 
-    type: String, 
-    enum: ['draft', 'published', 'scheduled', 'private'], 
-    default: 'published' 
+  @Prop({
+    type: String,
+    enum: ['draft', 'published', 'scheduled', 'private'],
+    default: 'published',
   })
   status: 'draft' | 'published' | 'scheduled' | 'private';
 
@@ -46,4 +46,3 @@ PostSchema.index({ status: 1 });
 PostSchema.index({ createdAt: -1 });
 PostSchema.index({ scheduledAt: 1 });
 PostSchema.index({ tags: 1 });
-
