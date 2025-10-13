@@ -438,7 +438,7 @@ Este projeto é licenciado sob a licença MIT.
 
 Para dúvidas ou problemas:
 
-1. 📚 Acesse a [Documentação Swagger](http://localhost:3000/api) (quando a aplicação estiver rodando)
+1. 📚 Acesse a [Documentação Swagger](https://escola-conecta-saber-latest.onrender.com/api)
 ---
 
 **🎉 Projeto desenvolvido com NestJS e MongoDB!**
