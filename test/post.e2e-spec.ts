@@ -67,13 +67,19 @@ describe('Posts (e2e)', () => {
   }, 30000);
 
   afterAll(async () => {
-    await userModel.deleteMany({});
-    await postModel.deleteMany({});
+    await postModel.deleteMany({ 
+      author: { $in: ['Test Student', 'Test Teacher', 'Test Admin'] } 
+    });
+    await userModel.deleteMany({ 
+      email: { $regex: '.*@example\\.com$' } 
+    });
     await app.close();
   });
 
   beforeEach(async () => {
-    await postModel.deleteMany({});
+    await postModel.deleteMany({ 
+      author: { $in: ['Test Student', 'Test Teacher', 'Test Admin'] } 
+    });
   });
 
   describe('/posts (POST)', () => {
@@ -144,7 +150,10 @@ describe('Posts (e2e)', () => {
 
   describe('/posts (GET)', () => {
     beforeEach(async () => {
-      // Create some test posts
+      await postModel.deleteMany({ 
+        author: { $in: ['Test Student', 'Test Teacher', 'Test Admin'] } 
+      });
+      
       await request(app.getHttpServer())
         .post('/posts')
         .set('Authorization', `Bearer ${teacherToken}`)
@@ -182,7 +191,13 @@ describe('Posts (e2e)', () => {
           expect(res.body).toHaveProperty('total');
           expect(res.body).toHaveProperty('page');
           expect(res.body).toHaveProperty('limit');
-          expect(res.body.data.length).toBe(2);
+          expect(res.body.data.length).toBeGreaterThanOrEqual(2);
+          const publishedPosts = res.body.data.filter((p: any) => p.published === true);
+          expect(publishedPosts.length).toBe(res.body.data.length);
+          const testPosts = res.body.data.filter((p: any) => 
+            p.title === 'Published Post 1' || p.title === 'Published Post 2'
+          );
+          expect(testPosts.length).toBe(2);
         });
     });
 
@@ -192,13 +207,19 @@ describe('Posts (e2e)', () => {
         .expect(200)
         .expect((res) => {
           expect(res.body.data.length).toBe(1);
-          expect(res.body.totalPages).toBe(2);
+          expect(res.body.totalPages).toBeGreaterThanOrEqual(2);
+          expect(Number(res.body.page)).toBe(1);
+          expect(Number(res.body.limit)).toBe(1);
         });
     });
   });
 
   describe('/posts/all (GET)', () => {
     beforeEach(async () => {
+      await postModel.deleteMany({ 
+        author: { $in: ['Test Student', 'Test Teacher', 'Test Admin'] } 
+      });
+      
       await request(app.getHttpServer())
         .post('/posts')
         .set('Authorization', `Bearer ${teacherToken}`)
@@ -224,7 +245,15 @@ describe('Posts (e2e)', () => {
         .set('Authorization', `Bearer ${teacherToken}`)
         .expect(200)
         .expect((res) => {
-          expect(res.body.data.length).toBe(2);
+          expect(res.body.data.length).toBeGreaterThanOrEqual(2);
+          const testPosts = res.body.data.filter((p: any) => 
+            p.title === 'Published Post' || p.title === 'Draft Post'
+          );
+          expect(testPosts.length).toBe(2);
+          const hasDraft = res.body.data.some((p: any) => p.published === false);
+          const hasPublished = res.body.data.some((p: any) => p.published === true);
+          expect(hasDraft).toBe(true);
+          expect(hasPublished).toBe(true);
         });
     });
 
@@ -238,6 +267,10 @@ describe('Posts (e2e)', () => {
 
   describe('/posts/search (GET)', () => {
     beforeEach(async () => {
+      await postModel.deleteMany({ 
+        author: { $in: ['Test Student', 'Test Teacher', 'Test Admin'] } 
+      });
+      
       await request(app.getHttpServer())
         .post('/posts')
         .set('Authorization', `Bearer ${teacherToken}`)
@@ -293,6 +326,10 @@ describe('Posts (e2e)', () => {
     let postId: string;
 
     beforeEach(async () => {
+      await postModel.deleteMany({ 
+        author: { $in: ['Test Student', 'Test Teacher', 'Test Admin'] } 
+      });
+      
       const res = await request(app.getHttpServer())
         .post('/posts')
         .set('Authorization', `Bearer ${teacherToken}`)
@@ -325,6 +362,10 @@ describe('Posts (e2e)', () => {
     let postId: string;
 
     beforeEach(async () => {
+      await postModel.deleteMany({ 
+        author: { $in: ['Test Student', 'Test Teacher', 'Test Admin'] } 
+      });
+      
       const res = await request(app.getHttpServer())
         .post('/posts')
         .set('Authorization', `Bearer ${teacherToken}`)
@@ -365,6 +406,10 @@ describe('Posts (e2e)', () => {
     let postId: string;
 
     beforeEach(async () => {
+      await postModel.deleteMany({ 
+        author: { $in: ['Test Student', 'Test Teacher', 'Test Admin'] } 
+      });
+      
       const res = await request(app.getHttpServer())
         .post('/posts')
         .set('Authorization', `Bearer ${teacherToken}`)

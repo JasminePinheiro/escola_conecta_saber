@@ -23,7 +23,9 @@ describe('Auth (e2e)', () => {
   });
 
   afterAll(async () => {
-    await userModel.deleteMany({});
+    await userModel.deleteMany({ 
+      email: { $regex: '.*@example\\.com$' } 
+    });
     await app.close();
   });
 
@@ -110,6 +112,8 @@ describe('Auth (e2e)', () => {
 
   describe('/auth/login (POST)', () => {
     beforeEach(async () => {
+      await userModel.deleteMany({ email: 'testlogin@example.com' });
+      
       const res = await request(app.getHttpServer()).post('/auth/register').send({
         email: 'testlogin@example.com',
         name: 'Test Login User',
@@ -159,6 +163,8 @@ describe('Auth (e2e)', () => {
     let accessToken: string;
 
     beforeEach(async () => {
+      await userModel.deleteMany({ email: 'testprofile@example.com' });
+      
       const response = await request(app.getHttpServer())
         .post('/auth/register')
         .send({
@@ -199,6 +205,8 @@ describe('Auth (e2e)', () => {
     let accessToken: string;
 
     beforeEach(async () => {
+      await userModel.deleteMany({ email: 'testupdate@example.com' });
+      
       const response = await request(app.getHttpServer())
         .post('/auth/register')
         .send({
@@ -242,6 +250,8 @@ describe('Auth (e2e)', () => {
     let accessToken: string;
 
     beforeEach(async () => {
+      await userModel.deleteMany({ email: 'testpassword@example.com' });
+      
       const response = await request(app.getHttpServer())
         .post('/auth/register')
         .send({
