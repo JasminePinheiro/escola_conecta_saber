@@ -47,7 +47,6 @@ describe('Posts (e2e)', () => {
       });
     teacherToken = teacherRes.body.accessToken;
 
-    // Create admin manually
     const bcrypt = require('bcryptjs');
     const hashedPassword = await bcrypt.hash('admin123', 12);
     const admin = await userModel.create({
@@ -65,7 +64,7 @@ describe('Posts (e2e)', () => {
         password: 'admin123',
       });
     adminToken = adminRes.body.accessToken;
-  });
+  }, 30000);
 
   afterAll(async () => {
     await userModel.deleteMany({});

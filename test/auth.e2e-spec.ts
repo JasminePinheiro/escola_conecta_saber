@@ -27,7 +27,7 @@ describe('Auth (e2e)', () => {
     await app.close();
   });
 
-  beforeEach(async () => {
+  afterEach(async () => {
     await userModel.deleteMany({ email: { $regex: 'test.*@example.com' } });
   });
 
@@ -110,12 +110,13 @@ describe('Auth (e2e)', () => {
 
   describe('/auth/login (POST)', () => {
     beforeEach(async () => {
-      await request(app.getHttpServer()).post('/auth/register').send({
+      const res = await request(app.getHttpServer()).post('/auth/register').send({
         email: 'testlogin@example.com',
         name: 'Test Login User',
         password: 'password123',
         role: 'student',
       });
+      expect(res.status).toBe(201);
     });
 
     it('should login with valid credentials', () => {
