@@ -18,12 +18,8 @@ import { LoggerMiddleware } from './common/middlewares/logger.middleware.js';
         const uri = configService.get<string>('MONGO_URI');
         
         if (!uri) {
-          console.error('❌ MONGO_URI não encontrada nas variáveis de ambiente!');
-          throw new Error('MONGO_URI is not defined');
+          throw new Error('MONGO_URI is not defined in environment variables');
         }
-        
-        console.log('🔌 Tentando conectar ao MongoDB...');
-        console.log('📍 URI encontrada:', uri.substring(0, 20) + '...');
 
         return {
           uri,
