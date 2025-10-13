@@ -28,12 +28,10 @@ import { LoggerMiddleware } from './common/middlewares/logger.middleware.js';
           serverSelectionTimeoutMS: 30000,
           socketTimeoutMS: 45000,
           connectTimeoutMS: 30000,
-          family: 4, // Força IPv4
-          // Configuração simplificada de SSL para MongoDB Atlas
+          family: 4,
           ssl: true,
           tls: true,
           tlsInsecure: false,
-          // Connection pool
           maxPoolSize: 10,
           minPoolSize: 2,
         };

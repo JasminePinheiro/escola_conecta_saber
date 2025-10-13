@@ -1,6 +1,5 @@
 FROM node:20-alpine
 
-# Instala certificados SSL necessários para MongoDB Atlas
 RUN apk add --no-cache openssl ca-certificates
 
 WORKDIR /usr/app
