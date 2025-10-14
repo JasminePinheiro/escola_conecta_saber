@@ -43,7 +43,6 @@ cp .env.example .env
 MONGO_URI=mongodb://localhost:27017/escola_conecta_saber
 JWT_SECRET=sua-chave-secreta-super-segura-aqui
 PORT=3000
-NODE_ENV=development
 ```
 
 ### Executar a Aplicação
@@ -358,9 +357,6 @@ Cliente ← Interceptor (After) ← Controller ← Service ← Repository ← Mo
 5. **Service**: Contém lógica de negócio
 6. **Repository**: Abstração de acesso aos dados
 7. **MongoDB**: Persistência de dados
-
-📖 Veja mais detalhes em `src/common/INTERCEPTORS_MIDDLEWARES.md`
-
 ---
 
 ## 🔐 Sistema de Permissões
@@ -415,15 +411,6 @@ npm run test:cov         # Cobertura de testes
 ✅ **Validação robusta** com Zod schemas  
 ✅ **Guards de proteção** para rotas sensíveis  
 ✅ **CORS configurado** para ambientes específicos
-
-### Recomendações para Produção
-
-1. Use variáveis de ambiente fortes para `JWT_SECRET`
-2. Configure HTTPS
-3. Implemente rate limiting
-4. Use helmet para headers de segurança
-5. Configure logs estruturados
-6. Implemente monitoramento
 
 ## 📝 Licença
 
