@@ -307,6 +307,8 @@ src/
 │       ├── dto/
 │       │   ├── post.dto.ts
 │       │   └── index.ts
+|       ├── schemas/                
+│       │   └── post.schema.ts
 │       └── post.module.ts
 │
 ├── config/                          # Configurações e seeds
