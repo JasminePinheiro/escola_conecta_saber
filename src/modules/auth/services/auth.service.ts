@@ -24,7 +24,7 @@ export class AuthService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   async register(registerUserDto: RegisterUserDto): Promise<AuthResponseDto> {
     const { email, name, password, role = 'student' } = registerUserDto;
@@ -232,6 +232,20 @@ export class AuthService {
       throw new BadRequestException(
         `Erro ao buscar usuários com role ${role}: ` + error.message,
       );
+    }
+  }
+
+  async deleteUser(id: string): Promise<void> {
+    try {
+      const result = await this.userRepository.delete(id);
+      if (!result) {
+        throw new NotFoundException('Usuário não encontrado');
+      }
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new BadRequestException('Erro ao deletar usuário: ' + error.message);
     }
   }
 

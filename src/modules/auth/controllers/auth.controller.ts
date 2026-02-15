@@ -4,6 +4,8 @@ import {
   Body,
   Get,
   Patch,
+  Delete,
+  Param,
   UseGuards,
   HttpCode,
   HttpStatus,
@@ -40,7 +42,7 @@ import {
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
@@ -127,9 +129,9 @@ export class AuthController {
 
   @Get('teachers')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.TEACHER)
   @ApiBearerAuth('JWT-auth')
-  @ApiOperation({ summary: 'Listar todos os professores (apenas admin)' })
+  @ApiOperation({ summary: 'Listar todos os professores (admin/teacher)' })
   @ApiResponse({
     status: 200,
     description: 'Lista de professores',
@@ -142,9 +144,9 @@ export class AuthController {
 
   @Get('students')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.TEACHER)
   @ApiBearerAuth('JWT-auth')
-  @ApiOperation({ summary: 'Listar todos os alunos (apenas admin)' })
+  @ApiOperation({ summary: 'Listar todos os alunos (admin/teacher)' })
   @ApiResponse({
     status: 200,
     description: 'Lista de alunos',
@@ -153,5 +155,35 @@ export class AuthController {
   @ApiResponse({ status: 403, description: 'Sem permissão' })
   async getStudents(): Promise<UserResponseDto[]> {
     return this.authService.findUsersByRole('student');
+  }
+
+  @Get('users/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.TEACHER)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Buscar usuário por ID (admin/teacher)' })
+  async getUserById(@Param('id') id: string): Promise<UserResponseDto> {
+    return this.authService.findUserById(id);
+  }
+
+  @Patch('users/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.TEACHER)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Atualizar qualquer usuário (admin/teacher)' })
+  async updateUser(
+    @Param('id') id: string,
+    @Body(new ZodValidationPipe(UpdateProfileSchema)) updateProfileDto: UpdateProfileDto,
+  ): Promise<UserResponseDto> {
+    return this.authService.updateProfile(id, updateProfileDto);
+  }
+
+  @Delete('users/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.TEACHER)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Excluir usuário (admin/teacher)' })
+  async deleteUser(@Param('id') id: string): Promise<void> {
+    return this.authService.deleteUser(id);
   }
 }

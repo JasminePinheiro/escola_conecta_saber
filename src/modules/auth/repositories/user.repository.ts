@@ -7,7 +7,7 @@ import { RegisterUserDto, UpdateProfileDto } from '../dto/auth.dto.js';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) { }
 
   async create(
     userData: RegisterUserDto & { password: string },
@@ -53,5 +53,9 @@ export class UserRepository implements IUserRepository {
     await this.userModel
       .findByIdAndUpdate(id, { lastLogin: new Date() })
       .exec();
+  }
+
+  async delete(id: string): Promise<UserDocument | null> {
+    return this.userModel.findByIdAndDelete(id).exec();
   }
 }
