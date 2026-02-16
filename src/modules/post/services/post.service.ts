@@ -186,6 +186,7 @@ export class PostService {
       title: post.title,
       content: post.content,
       author: post.author,
+      category: post.category,
       tags: post.tags,
       published: post.published,
       status: post.status,

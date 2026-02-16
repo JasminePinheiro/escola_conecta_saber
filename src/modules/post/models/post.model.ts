@@ -14,6 +14,9 @@ export class Post {
   @Prop({ required: true, maxlength: 100 })
   author: string;
 
+  @Prop({ required: true, maxlength: 100 })
+  category: string;
+
   @Prop({ type: [String], default: [] })
   tags: string[];
 

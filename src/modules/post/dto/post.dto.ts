@@ -43,12 +43,23 @@ export class CreatePostDto {
     description: 'Nome do autor (preenchido automaticamente)',
     maxLength: 100,
   })
-  @IsOptional()
   @IsString()
   @IsNotEmpty()
   @MinLength(1)
   @MaxLength(100)
   author?: string;
+
+  @ApiProperty({
+    example: 'Matemática',
+    description: 'Disciplina do post',
+    minLength: 1,
+    maxLength: 100,
+  })
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(1)
+  @MaxLength(100)
+  category: string;
 
   @ApiPropertyOptional({
     example: ['educação', 'programação', 'iniciantes'],
@@ -115,12 +126,22 @@ export class UpdatePostDto {
     example: 'Professor Silva',
     description: 'Nome do autor',
   })
-  @IsOptional()
   @IsString()
   @IsNotEmpty()
   @MinLength(1)
   @MaxLength(100)
   author?: string;
+
+  @ApiPropertyOptional({
+    example: 'História',
+    description: 'Nova disciplina do post',
+  })
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(1)
+  @MaxLength(100)
+  category?: string;
 
   @ApiPropertyOptional({
     example: ['educação', 'tecnologia'],
@@ -238,6 +259,9 @@ export class PostResponseDto {
 
   @ApiProperty({ example: 'Professor Silva' })
   author: string;
+
+  @ApiProperty({ example: 'Matemática' })
+  category: string;
 
   @ApiProperty({ example: ['educação', 'programação'] })
   tags: string[];
