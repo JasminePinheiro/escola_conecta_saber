@@ -37,9 +37,10 @@ export const UpdateProfileSchema = z
       .email({ message: 'Email deve ser um endereço de email válido' })
       .max(100, 'Email deve ter no máximo 100 caracteres')
       .optional(),
+    avatarUrl: z.string().optional(),
   })
-  .refine((data) => data.name !== undefined || data.email !== undefined, {
-    message: 'Pelo menos um campo (nome ou email) deve ser fornecido',
+  .refine((data) => data.name !== undefined || data.email !== undefined || data.avatarUrl !== undefined, {
+    message: 'Pelo menos um campo (nome, email ou avatar) deve ser fornecido',
   });
 
 export const ChangePasswordSchema = z

@@ -25,6 +25,9 @@ export class User {
   isActive: boolean;
 
   @Prop()
+  avatarUrl: string;
+
+  @Prop()
   lastLogin: Date;
 
   @Prop()

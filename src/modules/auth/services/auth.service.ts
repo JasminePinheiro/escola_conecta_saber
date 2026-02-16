@@ -256,6 +256,7 @@ export class AuthService {
       name: user.name,
       role: user.role,
       isActive: user.isActive,
+      avatarUrl: user.avatarUrl,
       lastLogin: user.lastLogin,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,

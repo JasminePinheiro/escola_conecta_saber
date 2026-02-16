@@ -91,6 +91,14 @@ export class UpdateProfileDto {
   @IsEmail()
   @MaxLength(100)
   email?: string;
+
+  @ApiPropertyOptional({
+    example: 'https://escola.com/avatar.jpg',
+    description: 'URL da imagem de perfil',
+  })
+  @IsOptional()
+  @IsString()
+  avatarUrl?: string;
 }
 
 export class ChangePasswordDto {
@@ -130,6 +138,9 @@ export class UserResponseDto {
 
   @ApiProperty({ example: true })
   isActive: boolean;
+
+  @ApiPropertyOptional({ example: 'https://escola.com/avatar.jpg' })
+  avatarUrl?: string;
 
   @ApiPropertyOptional({ example: '2024-01-15T10:30:00Z' })
   lastLogin?: Date;
