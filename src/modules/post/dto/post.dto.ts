@@ -187,14 +187,14 @@ export class SearchPostsDto {
     example: 10,
     description: 'Itens por página',
     minimum: 1,
-    maximum: 50,
+    maximum: 100,
     default: 10,
   })
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
   @Min(1)
-  @Max(50)
+  @Max(100)
   limit?: number = 10;
 }
 
@@ -215,14 +215,14 @@ export class PaginationDto {
     example: 10,
     description: 'Itens por página',
     minimum: 1,
-    maximum: 50,
+    maximum: 100,
     default: 10,
   })
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
   @Min(1)
-  @Max(50)
+  @Max(100)
   limit?: number = 10;
 }
 
