@@ -43,6 +43,7 @@ export class CreatePostDto {
     description: 'Nome do autor (preenchido automaticamente)',
     maxLength: 100,
   })
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
   @MinLength(1)
@@ -126,6 +127,7 @@ export class UpdatePostDto {
     example: 'Professor Silva',
     description: 'Nome do autor',
   })
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
   @MinLength(1)

@@ -82,6 +82,7 @@ export class PostRepository implements IPostRepository {
           $or: [
             { title: { $regex: query, $options: 'i' } },
             { content: { $regex: query, $options: 'i' } },
+            { category: { $regex: query, $options: 'i' } },
             { tags: { $in: [new RegExp(query, 'i')] } },
           ],
         },
@@ -107,6 +108,7 @@ export class PostRepository implements IPostRepository {
           $or: [
             { title: { $regex: query, $options: 'i' } },
             { content: { $regex: query, $options: 'i' } },
+            { category: { $regex: query, $options: 'i' } },
             { tags: { $in: [new RegExp(query, 'i')] } },
           ],
         },
