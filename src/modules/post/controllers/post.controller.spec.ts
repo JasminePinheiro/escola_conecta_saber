@@ -99,10 +99,10 @@ describe('PostController', () => {
 
       mockPostService.findAll.mockResolvedValue(mockResponse);
 
-      const result = await controller.findAll(paginationDto);
+      const result = await controller.findAll(paginationDto, undefined);
 
       expect(result).toEqual(mockResponse);
-      expect(mockPostService.findAll).toHaveBeenCalledWith(paginationDto);
+      expect(mockPostService.findAll).toHaveBeenCalledWith(paginationDto, undefined);
     });
   });
 
@@ -119,11 +119,12 @@ describe('PostController', () => {
 
       mockPostService.findAllForTeachers.mockResolvedValue(mockResponse);
 
-      const result = await controller.findAllForTeachers(paginationDto);
+      const result = await controller.findAllForTeachers(paginationDto, mockUser);
 
       expect(result).toEqual(mockResponse);
       expect(mockPostService.findAllForTeachers).toHaveBeenCalledWith(
         paginationDto,
+        mockUser.name,
       );
     });
   });
@@ -141,10 +142,10 @@ describe('PostController', () => {
 
       mockPostService.search.mockResolvedValue(mockResponse);
 
-      const result = await controller.search(searchDto);
+      const result = await controller.search(searchDto, undefined);
 
       expect(result).toEqual(mockResponse);
-      expect(mockPostService.search).toHaveBeenCalledWith(searchDto);
+      expect(mockPostService.search).toHaveBeenCalledWith(searchDto, undefined);
     });
   });
 
@@ -152,13 +153,16 @@ describe('PostController', () => {
     it('should return a post by id', async () => {
       mockPostService.findOne.mockResolvedValue(mockPost);
 
-      const result = await controller.findOne({
-        id: '507f1f77bcf86cd799439012',
-      });
+      const result = await controller.findOne(
+        { id: '507f1f77bcf86cd799439012' },
+        undefined,
+      );
 
       expect(result).toEqual(mockPost);
       expect(mockPostService.findOne).toHaveBeenCalledWith(
         '507f1f77bcf86cd799439012',
+        undefined,
+        undefined,
       );
     });
   });
