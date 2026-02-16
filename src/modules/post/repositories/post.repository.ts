@@ -7,7 +7,7 @@ import { CreatePostDto, UpdatePostDto } from '../dto/post.dto.js';
 
 @Injectable()
 export class PostRepository implements IPostRepository {
-  constructor(@InjectModel(Post.name) private postModel: Model<PostDocument>) {}
+  constructor(@InjectModel(Post.name) private postModel: Model<PostDocument>) { }
 
   async create(postData: CreatePostDto): Promise<PostDocument> {
     const post = new this.postModel(postData);
@@ -22,8 +22,17 @@ export class PostRepository implements IPostRepository {
     skip: number,
     limit: number,
     publishedOnly: boolean = false,
+    currentAuthor?: string,
   ): Promise<PostDocument[]> {
-    const query = publishedOnly ? { published: true } : {};
+    const query = publishedOnly
+      ? { status: 'published' }
+      : {
+        $or: [
+          { status: { $in: ['published', 'draft'] } },
+          { status: 'private', author: currentAuthor },
+        ],
+      };
+
     return this.postModel
       .find(query)
       .sort({ createdAt: -1 })
@@ -32,8 +41,18 @@ export class PostRepository implements IPostRepository {
       .exec();
   }
 
-  async countDocuments(publishedOnly: boolean = false): Promise<number> {
-    const query = publishedOnly ? { published: true } : {};
+  async countDocuments(
+    publishedOnly: boolean = false,
+    currentAuthor?: string,
+  ): Promise<number> {
+    const query = publishedOnly
+      ? { status: 'published' }
+      : {
+        $or: [
+          { status: { $in: ['published', 'draft'] } },
+          { status: 'private', author: currentAuthor },
+        ],
+      };
     return this.postModel.countDocuments(query);
   }
 
@@ -54,10 +73,11 @@ export class PostRepository implements IPostRepository {
     query: string,
     skip: number,
     limit: number,
+    currentAuthor?: string,
   ): Promise<PostDocument[]> {
     const searchQuery = {
       $and: [
-        { published: true },
+        { status: 'published' },
         {
           $or: [
             { title: { $regex: query, $options: 'i' } },
@@ -76,10 +96,13 @@ export class PostRepository implements IPostRepository {
       .exec();
   }
 
-  async countSearchResults(query: string): Promise<number> {
+  async countSearchResults(
+    query: string,
+    currentAuthor?: string,
+  ): Promise<number> {
     const searchQuery = {
       $and: [
-        { published: true },
+        { status: 'published' },
         {
           $or: [
             { title: { $regex: query, $options: 'i' } },

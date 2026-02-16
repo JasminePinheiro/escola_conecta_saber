@@ -8,10 +8,19 @@ export interface IPostRepository {
     skip: number,
     limit: number,
     publishedOnly?: boolean,
+    currentAuthor?: string,
   ): Promise<PostDocument[]>;
-  countDocuments(publishedOnly?: boolean): Promise<number>;
+  countDocuments(
+    publishedOnly?: boolean,
+    currentAuthor?: string,
+  ): Promise<number>;
   update(id: string, postData: UpdatePostDto): Promise<PostDocument | null>;
   delete(id: string): Promise<PostDocument | null>;
-  search(query: string, skip: number, limit: number): Promise<PostDocument[]>;
-  countSearchResults(query: string): Promise<number>;
+  search(
+    query: string,
+    skip: number,
+    limit: number,
+    currentAuthor?: string,
+  ): Promise<PostDocument[]>;
+  countSearchResults(query: string, currentAuthor?: string): Promise<number>;
 }

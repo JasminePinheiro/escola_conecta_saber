@@ -34,11 +34,12 @@ import { RolesGuard, Role } from '../../../common/guards/roles.guard.js';
 import { Roles } from '../../../common/decorators/roles.decorator.js';
 import { CurrentUser } from '../../../common/decorators/current-user.decorator.js';
 import { UserResponseDto } from '../../auth/dto/auth.dto.js';
+import { OptionalJwtAuthGuard } from '../../../common/guards/optional-jwt-auth.guard.js';
 
 @ApiTags('posts')
 @Controller('posts')
 export class PostController {
-  constructor(private readonly postService: PostService) {}
+  constructor(private readonly postService: PostService) { }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -63,14 +64,16 @@ export class PostController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Listar posts publicados (rota pública)' })
+  @UseGuards(OptionalJwtAuthGuard)
+  @ApiOperation({ summary: 'Listar posts públicos e rascunhos (rota com auth opcional)' })
   @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
   @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
-  @ApiResponse({ status: 200, description: 'Lista de posts publicados' })
+  @ApiResponse({ status: 200, description: 'Lista de posts (Público/Rascunho para todos, Privado para o autor)' })
   async findAll(
     @Query() paginationDto: PaginationDto,
+    @CurrentUser() user?: UserResponseDto,
   ): Promise<PaginatedResponseDto<PostResponseDto>> {
-    return this.postService.findAll(paginationDto);
+    return this.postService.findAll(paginationDto, user?.name);
   }
 
   @Get('all')
@@ -86,12 +89,14 @@ export class PostController {
   @ApiResponse({ status: 403, description: 'Sem permissão' })
   async findAllForTeachers(
     @Query() paginationDto: PaginationDto,
+    @CurrentUser() user: UserResponseDto,
   ): Promise<PaginatedResponseDto<PostResponseDto>> {
-    return this.postService.findAllForTeachers(paginationDto);
+    return this.postService.findAllForTeachers(paginationDto, user.name);
   }
 
   @Get('search')
-  @ApiOperation({ summary: 'Buscar posts por palavra-chave (rota pública)' })
+  @UseGuards(OptionalJwtAuthGuard)
+  @ApiOperation({ summary: 'Buscar posts por palavra-chave (rota com auth opcional)' })
   @ApiQuery({
     name: 'query',
     required: true,
@@ -103,21 +108,26 @@ export class PostController {
   @ApiResponse({ status: 200, description: 'Resultados da busca' })
   async search(
     @Query() searchPostsDto: SearchPostsDto,
+    @CurrentUser() user?: UserResponseDto,
   ): Promise<PaginatedResponseDto<PostResponseDto>> {
-    return this.postService.search(searchPostsDto);
+    return this.postService.search(searchPostsDto, user?.name);
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Buscar post por ID (rota pública)' })
+  @UseGuards(OptionalJwtAuthGuard)
+  @ApiOperation({ summary: 'Buscar post por ID (com auth opcional)' })
   @ApiParam({ name: 'id', type: String, example: '507f1f77bcf86cd799439011' })
   @ApiResponse({
     status: 200,
     description: 'Post encontrado',
     type: PostResponseDto,
   })
-  @ApiResponse({ status: 404, description: 'Post não encontrado' })
-  async findOne(@Param() params: { id: string }): Promise<PostResponseDto> {
-    return this.postService.findOne(params.id);
+  @ApiResponse({ status: 404, description: 'Post não encontrado ou acesso negado' })
+  async findOne(
+    @Param() params: { id: string },
+    @CurrentUser() user?: UserResponseDto,
+  ): Promise<PostResponseDto> {
+    return this.postService.findOne(params.id, user?.name, user?.role);
   }
 
   @Patch(':id')

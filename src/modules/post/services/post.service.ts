@@ -16,7 +16,7 @@ import { PostDocument } from '../models/post.model.js';
 
 @Injectable()
 export class PostService {
-  constructor(private readonly postRepository: PostRepository) {}
+  constructor(private readonly postRepository: PostRepository) { }
 
   async create(createPostDto: CreatePostDto): Promise<PostResponseDto> {
     try {
@@ -33,14 +33,15 @@ export class PostService {
 
   async findAll(
     paginationDto: PaginationDto,
+    currentAuthor?: string,
   ): Promise<PaginatedResponseDto<PostResponseDto>> {
     const { page = 1, limit = 10 } = paginationDto;
     const skip = (page - 1) * limit;
 
     try {
       const [posts, total] = await Promise.all([
-        this.postRepository.findAll(skip, limit, true),
-        this.postRepository.countDocuments(true),
+        this.postRepository.findAll(skip, limit, true, currentAuthor),
+        this.postRepository.countDocuments(true, currentAuthor),
       ]);
 
       const totalPages = Math.ceil(total / limit);
@@ -59,14 +60,15 @@ export class PostService {
 
   async findAllForTeachers(
     paginationDto: PaginationDto,
+    currentAuthor?: string,
   ): Promise<PaginatedResponseDto<PostResponseDto>> {
     const { page = 1, limit = 10 } = paginationDto;
     const skip = (page - 1) * limit;
 
     try {
       const [posts, total] = await Promise.all([
-        this.postRepository.findAll(skip, limit, false),
-        this.postRepository.countDocuments(false),
+        this.postRepository.findAll(skip, limit, false, currentAuthor),
+        this.postRepository.countDocuments(false, currentAuthor),
       ]);
 
       const totalPages = Math.ceil(total / limit);
@@ -83,13 +85,32 @@ export class PostService {
     }
   }
 
-  async findOne(id: string): Promise<PostResponseDto> {
+  async findOne(
+    id: string,
+    currentAuthor?: string,
+    role?: string,
+  ): Promise<PostResponseDto> {
     try {
       const post = await this.postRepository.findById(id);
       if (!post) {
         throw new NotFoundException(`Post com ID ${id} não encontrado`);
       }
-      return this.mapToResponseDto(post);
+
+      if (post.status === 'published') return this.mapToResponseDto(post);
+
+      if (post.status === 'draft') {
+        if (role === 'teacher' || role === 'admin') {
+          return this.mapToResponseDto(post);
+        }
+      }
+
+      if (post.status === 'private') {
+        if (post.author === currentAuthor) {
+          return this.mapToResponseDto(post);
+        }
+      }
+
+      throw new NotFoundException(`Post com ID ${id} não encontrado`);
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
@@ -134,14 +155,15 @@ export class PostService {
 
   async search(
     searchPostsDto: SearchPostsDto,
+    currentAuthor?: string,
   ): Promise<PaginatedResponseDto<PostResponseDto>> {
     const { query, page = 1, limit = 10 } = searchPostsDto;
     const skip = (page - 1) * limit;
 
     try {
       const [posts, total] = await Promise.all([
-        this.postRepository.search(query, skip, limit),
-        this.postRepository.countSearchResults(query),
+        this.postRepository.search(query, skip, limit, currentAuthor),
+        this.postRepository.countSearchResults(query, currentAuthor),
       ]);
 
       const totalPages = Math.ceil(total / limit);
