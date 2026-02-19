@@ -39,13 +39,13 @@ export class PostService {
     paginationDto: PaginationDto,
     currentAuthor?: string,
   ): Promise<PaginatedResponseDto<PostResponseDto>> {
-    const { page = 1, limit = 10 } = paginationDto;
+    const { page = 1, limit = 10, category } = paginationDto;
     const skip = (page - 1) * limit;
 
     try {
       const [posts, total] = await Promise.all([
-        this.postRepository.findAll(skip, limit, true, currentAuthor),
-        this.postRepository.countDocuments(true, currentAuthor),
+        this.postRepository.findAll(skip, limit, true, currentAuthor, category),
+        this.postRepository.countDocuments(true, currentAuthor, category),
       ]);
 
       const totalPages = Math.ceil(total / limit);
@@ -66,13 +66,13 @@ export class PostService {
     paginationDto: PaginationDto,
     currentAuthor?: string,
   ): Promise<PaginatedResponseDto<PostResponseDto>> {
-    const { page = 1, limit = 10 } = paginationDto;
+    const { page = 1, limit = 10, category } = paginationDto;
     const skip = (page - 1) * limit;
 
     try {
       const [posts, total] = await Promise.all([
-        this.postRepository.findAll(skip, limit, false, currentAuthor),
-        this.postRepository.countDocuments(false, currentAuthor),
+        this.postRepository.findAll(skip, limit, false, currentAuthor, category),
+        this.postRepository.countDocuments(false, currentAuthor, category),
       ]);
 
       const totalPages = Math.ceil(total / limit);
@@ -285,13 +285,13 @@ export class PostService {
     searchPostsDto: SearchPostsDto,
     currentAuthor?: string,
   ): Promise<PaginatedResponseDto<PostResponseDto>> {
-    const { query, page = 1, limit = 10 } = searchPostsDto;
+    const { query, page = 1, limit = 10, category } = searchPostsDto;
     const skip = (page - 1) * limit;
 
     try {
       const [posts, total] = await Promise.all([
-        this.postRepository.search(query, skip, limit, currentAuthor),
-        this.postRepository.countSearchResults(query, currentAuthor),
+        this.postRepository.search(query, skip, limit, currentAuthor, category),
+        this.postRepository.countSearchResults(query, currentAuthor, category),
       ]);
 
       const totalPages = Math.ceil(total / limit);

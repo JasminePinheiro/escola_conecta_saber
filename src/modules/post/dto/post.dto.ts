@@ -241,6 +241,14 @@ export class SearchPostsDto {
   query: string;
 
   @ApiPropertyOptional({
+    example: 'Matemática',
+    description: 'Filtrar por categoria específica',
+  })
+  @IsOptional()
+  @IsString()
+  category?: string;
+
+  @ApiPropertyOptional({
     example: 1,
     description: 'Número da página',
     minimum: 1,
@@ -293,6 +301,14 @@ export class PaginationDto {
   @Min(1)
   @Max(100)
   limit?: number = 10;
+
+  @ApiPropertyOptional({
+    example: 'Matemática',
+    description: 'Filtrar por categoria específica',
+  })
+  @IsOptional()
+  @IsString({ message: 'A categoria deve ser uma string' })
+  category?: string;
 }
 
 export class PostResponseDto {

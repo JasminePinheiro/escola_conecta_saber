@@ -9,10 +9,12 @@ export interface IPostRepository {
     limit: number,
     publishedOnly?: boolean,
     currentAuthor?: string,
+    category?: string,
   ): Promise<PostDocument[]>;
   countDocuments(
     publishedOnly?: boolean,
     currentAuthor?: string,
+    category?: string,
   ): Promise<number>;
   update(id: string, postData: UpdatePostDto): Promise<PostDocument | null>;
   delete(id: string): Promise<PostDocument | null>;
@@ -21,6 +23,7 @@ export interface IPostRepository {
     skip: number,
     limit: number,
     currentAuthor?: string,
+    category?: string,
   ): Promise<PostDocument[]>;
-  countSearchResults(query: string, currentAuthor?: string): Promise<number>;
+  countSearchResults(query: string, currentAuthor?: string, category?: string): Promise<number>;
 }

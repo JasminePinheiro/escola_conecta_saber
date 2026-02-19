@@ -23,8 +23,9 @@ export class PostRepository implements IPostRepository {
     limit: number,
     publishedOnly: boolean = false,
     currentAuthor?: string,
+    category?: string,
   ): Promise<PostDocument[]> {
-    const query = publishedOnly
+    const filters: any = publishedOnly
       ? { status: 'published' }
       : {
         $or: [
@@ -33,8 +34,12 @@ export class PostRepository implements IPostRepository {
         ],
       };
 
+    if (category) {
+      filters.category = category;
+    }
+
     return this.postModel
-      .find(query)
+      .find(filters)
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
@@ -44,8 +49,9 @@ export class PostRepository implements IPostRepository {
   async countDocuments(
     publishedOnly: boolean = false,
     currentAuthor?: string,
+    category?: string,
   ): Promise<number> {
-    const query = publishedOnly
+    const filters: any = publishedOnly
       ? { status: 'published' }
       : {
         $or: [
@@ -53,7 +59,12 @@ export class PostRepository implements IPostRepository {
           { status: 'private', author: currentAuthor },
         ],
       };
-    return this.postModel.countDocuments(query);
+
+    if (category) {
+      filters.category = category;
+    }
+
+    return this.postModel.countDocuments(filters);
   }
 
   async update(
@@ -74,10 +85,17 @@ export class PostRepository implements IPostRepository {
     skip: number,
     limit: number,
     currentAuthor?: string,
+    category?: string,
   ): Promise<PostDocument[]> {
+    const filters: any[] = [{ status: 'published' }];
+
+    if (category) {
+      filters.push({ category: category });
+    }
+
     const searchQuery = {
       $and: [
-        { status: 'published' },
+        ...filters,
         {
           $or: [
             { title: { $regex: query, $options: 'i' } },
@@ -100,10 +118,17 @@ export class PostRepository implements IPostRepository {
   async countSearchResults(
     query: string,
     currentAuthor?: string,
+    category?: string,
   ): Promise<number> {
+    const filters: any[] = [{ status: 'published' }];
+
+    if (category) {
+      filters.push({ category: category });
+    }
+
     const searchQuery = {
       $and: [
-        { status: 'published' },
+        ...filters,
         {
           $or: [
             { title: { $regex: query, $options: 'i' } },
