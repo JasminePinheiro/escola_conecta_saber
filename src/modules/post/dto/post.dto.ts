@@ -20,10 +20,10 @@ export class CreatePostDto {
     minLength: 1,
     maxLength: 200,
   })
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(1)
-  @MaxLength(200)
+  @IsString({ message: 'O título deve ser uma string' })
+  @IsNotEmpty({ message: 'O título é obrigatório' })
+  @MinLength(1, { message: 'O título não pode ser vazio' })
+  @MaxLength(200, { message: 'O título deve ter no máximo 200 caracteres' })
   title: string;
 
   @ApiProperty({
@@ -32,10 +32,10 @@ export class CreatePostDto {
     minLength: 1,
     maxLength: 5000,
   })
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(1)
-  @MaxLength(5000)
+  @IsString({ message: 'O conteúdo deve ser uma string' })
+  @IsNotEmpty({ message: 'O conteúdo é obrigatório' })
+  @MinLength(1, { message: 'O conteúdo não pode ser vazio' })
+  @MaxLength(5000, { message: 'O conteúdo deve ter no máximo 5000 caracteres' })
   content: string;
 
   @ApiPropertyOptional({
@@ -44,8 +44,8 @@ export class CreatePostDto {
     maxLength: 100,
   })
   @IsOptional()
-  @IsString()
-  @IsNotEmpty()
+  @IsString({ message: 'O autor deve ser uma string' })
+  @IsNotEmpty({ message: 'O autor não pode ser vazio' })
   @MinLength(1)
   @MaxLength(100)
   author?: string;
@@ -56,10 +56,10 @@ export class CreatePostDto {
     minLength: 1,
     maxLength: 100,
   })
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(1)
-  @MaxLength(100)
+  @IsString({ message: 'A categoria deve ser uma string' })
+  @IsNotEmpty({ message: 'A categoria é obrigatória' })
+  @MinLength(1, { message: 'A categoria não pode ser vazia' })
+  @MaxLength(100, { message: 'A categoria deve ter no máximo 100 caracteres' })
   category: string;
 
   @ApiPropertyOptional({
@@ -88,7 +88,7 @@ export class CreatePostDto {
     default: 'draft',
   })
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'O status deve ser uma string' })
   status?: 'draft' | 'published' | 'scheduled' | 'private';
 
   @ApiPropertyOptional({
@@ -106,8 +106,8 @@ export class UpdatePostDto {
     description: 'Novo título do post',
   })
   @IsOptional()
-  @IsString()
-  @IsNotEmpty()
+  @IsString({ message: 'O título deve ser uma string' })
+  @IsNotEmpty({ message: 'O título não pode ser vazio' })
   @MinLength(1)
   @MaxLength(200)
   title?: string;
@@ -117,7 +117,7 @@ export class UpdatePostDto {
     description: 'Novo conteúdo do post',
   })
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'O conteúdo deve ser uma string' })
   @IsNotEmpty()
   @MinLength(1)
   @MaxLength(5000)
@@ -128,8 +128,8 @@ export class UpdatePostDto {
     description: 'Nome do autor',
   })
   @IsOptional()
-  @IsString()
-  @IsNotEmpty()
+  @IsString({ message: 'O autor deve ser uma string' })
+  @IsNotEmpty({ message: 'O autor não pode ser vazio' })
   @MinLength(1)
   @MaxLength(100)
   author?: string;
@@ -139,8 +139,8 @@ export class UpdatePostDto {
     description: 'Nova disciplina do post',
   })
   @IsOptional()
-  @IsString()
-  @IsNotEmpty()
+  @IsString({ message: 'A categoria deve ser uma string' })
+  @IsNotEmpty({ message: 'A categoria não pode ser vazia' })
   @MinLength(1)
   @MaxLength(100)
   category?: string;
@@ -169,7 +169,7 @@ export class UpdatePostDto {
     description: 'Estado do post',
   })
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'O status deve ser uma string' })
   status?: 'draft' | 'published' | 'scheduled' | 'private';
 
   @ApiPropertyOptional({
@@ -188,7 +188,7 @@ export class CreateCommentDto {
     minLength: 1,
     maxLength: 500,
   })
-  @IsString()
+  @IsString({ message: 'O conteúdo deve ser uma string' })
   @IsNotEmpty()
   @MinLength(1)
   @MaxLength(500)
@@ -200,7 +200,7 @@ export class CreateCommentDto {
     maxLength: 100,
   })
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'O autor deve ser uma string' })
   @MaxLength(100)
   author?: string;
 
@@ -209,7 +209,7 @@ export class CreateCommentDto {
     description: 'ID do autor do comentário',
   })
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'O ID do autor deve ser uma string' })
   authorId?: string;
 }
 
@@ -220,7 +220,7 @@ export class UpdateCommentDto {
     minLength: 1,
     maxLength: 500,
   })
-  @IsString()
+  @IsString({ message: 'O conteúdo deve ser uma string' })
   @IsNotEmpty()
   @MinLength(1)
   @MaxLength(500)
@@ -234,8 +234,8 @@ export class SearchPostsDto {
     minLength: 1,
     maxLength: 100,
   })
-  @IsString()
-  @IsNotEmpty()
+  @IsString({ message: 'A busca deve ser uma string' })
+  @IsNotEmpty({ message: 'O termo de busca não pode ser vazio' })
   @MinLength(1)
   @MaxLength(100)
   query: string;

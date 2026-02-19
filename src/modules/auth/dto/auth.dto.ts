@@ -15,8 +15,8 @@ export class RegisterUserDto {
     description: 'Email do usuário',
     maxLength: 100,
   })
-  @IsEmail()
-  @MaxLength(100)
+  @IsEmail({}, { message: 'O e-mail deve ser um endereço de e-mail válido' })
+  @MaxLength(100, { message: 'O e-mail deve ter no máximo 100 caracteres' })
   email: string;
 
   @ApiProperty({
@@ -25,10 +25,10 @@ export class RegisterUserDto {
     minLength: 2,
     maxLength: 100,
   })
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(2)
-  @MaxLength(100)
+  @IsString({ message: 'O nome deve ser uma string' })
+  @IsNotEmpty({ message: 'O nome é obrigatório' })
+  @MinLength(2, { message: 'O nome deve ter no mínimo 2 caracteres' })
+  @MaxLength(100, { message: 'O nome deve ter no máximo 100 caracteres' })
   name: string;
 
   @ApiProperty({
@@ -37,10 +37,10 @@ export class RegisterUserDto {
     minLength: 6,
     maxLength: 50,
   })
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(6)
-  @MaxLength(50)
+  @IsString({ message: 'A senha deve ser uma string' })
+  @IsNotEmpty({ message: 'A senha é obrigatória' })
+  @MinLength(6, { message: 'A senha deve ter no mínimo 6 caracteres' })
+  @MaxLength(50, { message: 'A senha deve ter no máximo 50 caracteres' })
   password: string;
 
   @ApiPropertyOptional({
@@ -50,7 +50,7 @@ export class RegisterUserDto {
     default: 'student',
   })
   @IsOptional()
-  @IsEnum(['student', 'teacher'])
+  @IsEnum(['student', 'teacher'], { message: 'O papel deve ser estudante ou professor' })
   role?: 'student' | 'teacher';
 }
 
@@ -59,12 +59,12 @@ export class LoginUserDto {
     example: 'usuario@escola.com',
     description: 'Email do usuário',
   })
-  @IsEmail()
+  @IsEmail({}, { message: 'O e-mail deve ser um endereço de e-mail válido' })
   email: string;
 
   @ApiProperty({ example: 'senha123', description: 'Senha do usuário' })
-  @IsString()
-  @IsNotEmpty()
+  @IsString({ message: 'A senha deve ser uma string' })
+  @IsNotEmpty({ message: 'A senha é obrigatória' })
   password: string;
 }
 
@@ -76,10 +76,10 @@ export class UpdateProfileDto {
     maxLength: 100,
   })
   @IsOptional()
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(2)
-  @MaxLength(100)
+  @IsString({ message: 'O nome deve ser uma string' })
+  @IsNotEmpty({ message: 'O nome não pode ser vazio' })
+  @MinLength(2, { message: 'O nome deve ter no mínimo 2 caracteres' })
+  @MaxLength(100, { message: 'O nome deve ter no máximo 100 caracteres' })
   name?: string;
 
   @ApiPropertyOptional({
@@ -88,8 +88,8 @@ export class UpdateProfileDto {
     maxLength: 100,
   })
   @IsOptional()
-  @IsEmail()
-  @MaxLength(100)
+  @IsEmail({}, { message: 'O e-mail deve ser um endereço de e-mail válido' })
+  @MaxLength(100, { message: 'O e-mail deve ter no máximo 100 caracteres' })
   email?: string;
 
   @ApiPropertyOptional({
@@ -106,8 +106,8 @@ export class ChangePasswordDto {
     example: 'senhaAtual123',
     description: 'Senha atual do usuário',
   })
-  @IsString()
-  @IsNotEmpty()
+  @IsString({ message: 'A senha atual deve ser uma string' })
+  @IsNotEmpty({ message: 'A senha atual é obrigatória' })
   currentPassword: string;
 
   @ApiProperty({
@@ -116,10 +116,10 @@ export class ChangePasswordDto {
     minLength: 6,
     maxLength: 50,
   })
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(6)
-  @MaxLength(50)
+  @IsString({ message: 'A nova senha deve ser uma string' })
+  @IsNotEmpty({ message: 'A nova senha é obrigatória' })
+  @MinLength(6, { message: 'A nova senha deve ter no mínimo 6 caracteres' })
+  @MaxLength(50, { message: 'A nova senha deve ter no máximo 50 caracteres' })
   newPassword: string;
 }
 
