@@ -259,11 +259,9 @@ export class PostService {
 
       const comment = post.comments[commentIndex];
 
-      // Autor, Professor ou Admin pode deletar
       if (
         comment.authorId !== user.id &&
-        user.role !== 'admin' &&
-        user.role !== 'teacher'
+        user.role !== 'admin'
       ) {
         throw new ForbiddenException('Sem permissão para remover este comentário');
       }
