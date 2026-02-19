@@ -10,6 +10,7 @@ import {
   HttpStatus,
   HttpCode,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -187,8 +188,13 @@ export class PostController {
     @Body() createCommentDto: CreateCommentDto,
     @CurrentUser() user: UserResponseDto,
   ): Promise<PostResponseDto> {
-    createCommentDto.author = user.name;
-    createCommentDto.authorId = user.id;
+    createCommentDto.author = user.name || 'Usuário';
+    createCommentDto.authorId = user.id || (user as any)._id?.toString();
+
+    if (!createCommentDto.authorId) {
+      throw new BadRequestException('Não foi possível identificar o autor do comentário. Verifique seu login.');
+    }
+
     return this.postService.addComment(id, createCommentDto);
   }
 

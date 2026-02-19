@@ -188,6 +188,7 @@ export class PostService {
 
       return this.mapToResponseDto(updatedPost);
     } catch (error) {
+      console.error('Erro detalhado ao adicionar comentário:', error);
       if (error instanceof NotFoundException) {
         throw error;
       }
