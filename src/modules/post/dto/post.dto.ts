@@ -181,6 +181,30 @@ export class UpdatePostDto {
   scheduledAt?: Date;
 }
 
+export class CreateCommentDto {
+  @ApiProperty({
+    example: 'Muito interessante este post!',
+    description: 'Conteúdo do comentário',
+    minLength: 1,
+    maxLength: 500,
+  })
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(1)
+  @MaxLength(500)
+  content: string;
+
+  @ApiPropertyOptional({
+    example: 'Aluno João',
+    description: 'Nome do autor do comentário',
+    maxLength: 100,
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  author?: string;
+}
+
 export class SearchPostsDto {
   @ApiProperty({
     example: 'programação',
@@ -285,6 +309,18 @@ export class PostResponseDto {
 
   @ApiProperty({ example: '2024-01-15T10:30:00Z' })
   updatedAt: Date;
+
+  @ApiPropertyOptional({
+    isArray: true,
+    example: [
+      {
+        author: 'João',
+        content: 'Boa explicação!',
+        createdAt: '2024-01-16T10:30:00Z',
+      },
+    ],
+  })
+  comments?: { author: string; content: string; createdAt: Date }[];
 }
 
 export class PaginatedResponseDto<T> {

@@ -11,6 +11,7 @@ import {
   PaginationDto,
   PostResponseDto,
   PaginatedResponseDto,
+  CreateCommentDto,
 } from '../dto/post.dto.js';
 import { PostDocument } from '../models/post.model.js';
 
@@ -153,6 +154,43 @@ export class PostService {
     }
   }
 
+  async addComment(
+    id: string,
+    createCommentDto: CreateCommentDto,
+  ): Promise<PostResponseDto> {
+    try {
+      const post = await this.postRepository.findById(id);
+      if (!post) {
+        throw new NotFoundException(`Post com ID ${id} não encontrado`);
+      }
+
+      if (!post.comments) {
+        post.comments = [];
+      }
+
+      post.comments.push({
+        author: createCommentDto.author || 'Anônimo',
+        content: createCommentDto.content,
+        createdAt: new Date(),
+      });
+
+      const updatedPost = await this.postRepository.update(id, {
+        comments: post.comments,
+      } as any);
+
+      if (!updatedPost) {
+        throw new NotFoundException(`Post com ID ${id} não encontrado após atualização`);
+      }
+
+      return this.mapToResponseDto(updatedPost);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new BadRequestException('Erro ao adicionar comentário: ' + error.message);
+    }
+  }
+
   async search(
     searchPostsDto: SearchPostsDto,
     currentAuthor?: string,
@@ -193,6 +231,7 @@ export class PostService {
       scheduledAt: post.scheduledAt,
       createdAt: post.createdAt,
       updatedAt: post.updatedAt,
+      comments: post.comments || [],
     };
   }
 }

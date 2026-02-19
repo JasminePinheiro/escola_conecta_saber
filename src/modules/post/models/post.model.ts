@@ -38,6 +38,18 @@ export class Post {
 
   @Prop()
   updatedAt: Date;
+
+  @Prop({
+    type: [
+      {
+        author: { type: String, required: true },
+        content: { type: String, required: true },
+        createdAt: { type: Date, default: Date.now },
+      },
+    ],
+    default: [],
+  })
+  comments: { author: string; content: string; createdAt: Date }[];
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);

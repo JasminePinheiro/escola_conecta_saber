@@ -28,6 +28,7 @@ import {
   PaginationDto,
   PostResponseDto,
   PaginatedResponseDto,
+  CreateCommentDto,
 } from '../dto/post.dto.js';
 import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard.js';
 import { RolesGuard, Role } from '../../../common/guards/roles.guard.js';
@@ -165,5 +166,27 @@ export class PostController {
   @ApiResponse({ status: 404, description: 'Post não encontrado' })
   async remove(@Param() params: { id: string }): Promise<void> {
     return this.postService.remove(params.id);
+  }
+
+  @Post(':id/comments')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Adicionar comentário a um post' })
+  @ApiParam({ name: 'id', type: String, example: '507f1f77bcf86cd799439011' })
+  @ApiBody({ type: CreateCommentDto })
+  @ApiResponse({
+    status: 201,
+    description: 'Comentário adicionado com sucesso',
+    type: PostResponseDto,
+  })
+  @ApiResponse({ status: 401, description: 'Não autenticado' })
+  @ApiResponse({ status: 404, description: 'Post não encontrado' })
+  async addComment(
+    @Param('id') id: string,
+    @Body() createCommentDto: CreateCommentDto,
+    @CurrentUser() user: UserResponseDto,
+  ): Promise<PostResponseDto> {
+    createCommentDto.author = user.name;
+    return this.postService.addComment(id, createCommentDto);
   }
 }
