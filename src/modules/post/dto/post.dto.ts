@@ -203,6 +203,28 @@ export class CreateCommentDto {
   @IsString()
   @MaxLength(100)
   author?: string;
+
+  @ApiPropertyOptional({
+    example: 'user_123',
+    description: 'ID do autor do comentário',
+  })
+  @IsOptional()
+  @IsString()
+  authorId?: string;
+}
+
+export class UpdateCommentDto {
+  @ApiProperty({
+    example: 'Conteúdo atualizado!',
+    description: 'Novo conteúdo do comentário',
+    minLength: 1,
+    maxLength: 500,
+  })
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(1)
+  @MaxLength(500)
+  content: string;
 }
 
 export class SearchPostsDto {
@@ -320,7 +342,7 @@ export class PostResponseDto {
       },
     ],
   })
-  comments?: { author: string; content: string; createdAt: Date }[];
+  comments?: { id?: string; author: string; authorId: string; content: string; createdAt: Date }[];
 }
 
 export class PaginatedResponseDto<T> {

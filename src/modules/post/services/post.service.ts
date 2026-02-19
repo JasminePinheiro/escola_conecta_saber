@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { PostRepository } from '../repositories/post.repository.js';
 import {
@@ -12,7 +13,9 @@ import {
   PostResponseDto,
   PaginatedResponseDto,
   CreateCommentDto,
+  UpdateCommentDto,
 } from '../dto/post.dto.js';
+import { UserResponseDto } from '../../auth/dto/auth.dto.js';
 import { PostDocument } from '../models/post.model.js';
 
 @Injectable()
@@ -170,6 +173,7 @@ export class PostService {
 
       post.comments.push({
         author: createCommentDto.author || 'Anônimo',
+        authorId: createCommentDto.authorId || '',
         content: createCommentDto.content,
         createdAt: new Date(),
       });
@@ -188,6 +192,93 @@ export class PostService {
         throw error;
       }
       throw new BadRequestException('Erro ao adicionar comentário: ' + error.message);
+    }
+  }
+
+  async updateComment(
+    id: string,
+    commentId: string,
+    updateCommentDto: UpdateCommentDto,
+    user: UserResponseDto,
+  ): Promise<PostResponseDto> {
+    try {
+      const post = await this.postRepository.findById(id);
+      if (!post) {
+        throw new NotFoundException(`Post com ID ${id} não encontrado`);
+      }
+
+      const commentIndex = post.comments.findIndex(
+        (c) => (c as any)._id?.toString() === commentId,
+      );
+
+      if (commentIndex === -1) {
+        throw new NotFoundException(`Comentário com ID ${commentId} não encontrado`);
+      }
+
+      const comment = post.comments[commentIndex];
+
+      // Apenas o autor ou admin pode editar
+      if (comment.authorId !== user.id && user.role !== 'admin') {
+        throw new ForbiddenException('Sem permissão para editar este comentário');
+      }
+
+      comment.content = updateCommentDto.content;
+
+      const updatedPost = await this.postRepository.update(id, {
+        comments: post.comments,
+      } as any);
+
+      return this.mapToResponseDto(updatedPost!);
+    } catch (error) {
+      if (error instanceof NotFoundException || error instanceof ForbiddenException) {
+        throw error;
+      }
+      throw new BadRequestException('Erro ao atualizar comentário: ' + error.message);
+    }
+  }
+
+  async deleteComment(
+    id: string,
+    commentId: string,
+    user: UserResponseDto,
+  ): Promise<PostResponseDto> {
+    try {
+      const post = await this.postRepository.findById(id);
+      if (!post) {
+        throw new NotFoundException(`Post com ID ${id} não encontrado`);
+      }
+
+      const commentIndex = post.comments.findIndex(
+        (c) => (c as any)._id?.toString() === commentId,
+      );
+
+      if (commentIndex === -1) {
+        throw new NotFoundException(`Comentário com ID ${commentId} não encontrado`);
+      }
+
+      const comment = post.comments[commentIndex];
+
+      // Autor, Professor ou Admin pode deletar
+      if (
+        comment.authorId !== user.id &&
+        user.role !== 'admin' &&
+        user.role !== 'teacher'
+      ) {
+        throw new ForbiddenException('Sem permissão para remover este comentário');
+      }
+
+      post.comments.splice(commentIndex, 1);
+
+      const updatedPost = await this.postRepository.update(id, {
+        comments: post.comments,
+      } as any);
+
+      return this.mapToResponseDto(updatedPost!);
+    } catch (error) {
+      if (error instanceof NotFoundException || error instanceof ForbiddenException) {
+        throw error;
+      }
+      throw new BadRequestException('Erro ao remover comentário: ' + error.message);
     }
   }
 
@@ -231,7 +322,14 @@ export class PostService {
       scheduledAt: post.scheduledAt,
       createdAt: post.createdAt,
       updatedAt: post.updatedAt,
-      comments: post.comments || [],
+      comments:
+        post.comments?.map((c) => ({
+          id: (c as any)._id?.toString(),
+          author: c.author,
+          authorId: c.authorId,
+          content: c.content,
+          createdAt: c.createdAt,
+        })) || [],
     };
   }
 }

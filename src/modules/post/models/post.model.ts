@@ -43,13 +43,14 @@ export class Post {
     type: [
       {
         author: { type: String, required: true },
+        authorId: { type: String, required: true },
         content: { type: String, required: true },
         createdAt: { type: Date, default: Date.now },
       },
     ],
     default: [],
   })
-  comments: { author: string; content: string; createdAt: Date }[];
+  comments: { id?: string; author: string; authorId: string; content: string; createdAt: Date }[];
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);

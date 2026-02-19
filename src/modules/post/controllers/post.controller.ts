@@ -29,6 +29,7 @@ import {
   PostResponseDto,
   PaginatedResponseDto,
   CreateCommentDto,
+  UpdateCommentDto,
 } from '../dto/post.dto.js';
 import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard.js';
 import { RolesGuard, Role } from '../../../common/guards/roles.guard.js';
@@ -187,6 +188,32 @@ export class PostController {
     @CurrentUser() user: UserResponseDto,
   ): Promise<PostResponseDto> {
     createCommentDto.author = user.name;
+    createCommentDto.authorId = user.id;
     return this.postService.addComment(id, createCommentDto);
+  }
+
+  @Patch(':id/comments/:commentId')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Editar comentário' })
+  async updateComment(
+    @Param('id') id: string,
+    @Param('commentId') commentId: string,
+    @Body() updateCommentDto: UpdateCommentDto,
+    @CurrentUser() user: UserResponseDto,
+  ): Promise<PostResponseDto> {
+    return this.postService.updateComment(id, commentId, updateCommentDto, user);
+  }
+
+  @Delete(':id/comments/:commentId')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Remover comentário' })
+  async deleteComment(
+    @Param('id') id: string,
+    @Param('commentId') commentId: string,
+    @CurrentUser() user: UserResponseDto,
+  ): Promise<PostResponseDto> {
+    return this.postService.deleteComment(id, commentId, user);
   }
 }
