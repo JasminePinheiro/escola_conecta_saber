@@ -59,6 +59,7 @@ describe('PostService', () => {
         title: 'Test Post',
         content: 'Test content',
         author: 'Professor Silva',
+        category: 'Matemática',
         tags: ['test'],
         published: true,
       };
@@ -83,7 +84,7 @@ describe('PostService', () => {
       expect(result.data).toHaveLength(1);
       expect(result.total).toBe(1);
       expect(result.totalPages).toBe(1);
-      expect(mockPostRepository.findAll).toHaveBeenCalledWith(0, 10, true, undefined);
+      expect(mockPostRepository.findAll).toHaveBeenCalledWith(0, 10, true, undefined, undefined);
     });
   });
 
@@ -95,7 +96,7 @@ describe('PostService', () => {
       const result = await service.findAllForTeachers({ page: 1, limit: 10 });
 
       expect(result.data).toHaveLength(1);
-      expect(mockPostRepository.findAll).toHaveBeenCalledWith(0, 10, false, undefined);
+      expect(mockPostRepository.findAll).toHaveBeenCalledWith(0, 10, false, undefined, undefined);
     });
   });
 
@@ -180,7 +181,7 @@ describe('PostService', () => {
       });
 
       expect(result.data).toHaveLength(1);
-      expect(mockPostRepository.search).toHaveBeenCalledWith('test', 0, 10, undefined);
+      expect(mockPostRepository.search).toHaveBeenCalledWith('test', 0, 10, undefined, undefined);
     });
   });
 });

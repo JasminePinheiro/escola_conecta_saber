@@ -35,7 +35,7 @@ export class PostRepository implements IPostRepository {
       };
 
     if (category) {
-      filters.category = category;
+      filters.category = { $regex: `^${category}$`, $options: 'i' };
     }
 
     return this.postModel
@@ -90,7 +90,7 @@ export class PostRepository implements IPostRepository {
     const filters: any[] = [{ status: 'published' }];
 
     if (category) {
-      filters.push({ category: category });
+      filters.push({ category: { $regex: `^${category}$`, $options: 'i' } });
     }
 
     const searchQuery = {
@@ -100,7 +100,7 @@ export class PostRepository implements IPostRepository {
           $or: [
             { title: { $regex: query, $options: 'i' } },
             { content: { $regex: query, $options: 'i' } },
-            { category: { $regex: query, $options: 'i' } },
+            ...(category ? [] : [{ category: { $regex: query, $options: 'i' } }]),
             { tags: { $in: [new RegExp(query, 'i')] } },
           ],
         },
