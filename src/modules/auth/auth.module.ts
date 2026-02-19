@@ -18,7 +18,7 @@ import { RolesGuard } from '../../common/guards/roles.guard.js';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET') || 'your-secret-key',
-        signOptions: { expiresIn: '15m' },
+        signOptions: { expiresIn: '7d' },
       }),
       inject: [ConfigService],
     }),
@@ -27,4 +27,4 @@ import { RolesGuard } from '../../common/guards/roles.guard.js';
   providers: [AuthService, UserRepository, JwtStrategy, RolesGuard],
   exports: [AuthService, JwtStrategy, RolesGuard],
 })
-export class AuthModule {}
+export class AuthModule { }
